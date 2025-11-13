@@ -66,7 +66,6 @@ public abstract class CharacterBase : MonoBehaviour
 
         bool isMoving = moveInput.magnitude > 0.1f;
 
-        // Если персонаж движется, сбрасываем таймер и выключаем танец
         if (isMoving)
         {
             if (isIdle)
