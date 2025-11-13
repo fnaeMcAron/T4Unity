@@ -38,6 +38,7 @@ public class RodionController : CharacterBase
     {
         // TODO: добавить мультипликаторы урона к итоговой реализации
         Debug.Log("Родион: атака лобзиком в ближнем бою");
+        _styleManager.AddStylePoints(10);
     }
 
     public override void PerformRangedAttack()
@@ -45,6 +46,7 @@ public class RodionController : CharacterBase
         // TODO: добавить мультипликаторы урона к итоговой реализации
         Debug.Log("Родион: выстрел аннигилятором в дальнем бою");
         ShootAnnihilator();
+        _styleManager.AddStylePoints(10);
     }
 
     public override void UseAbility(bool isHold)

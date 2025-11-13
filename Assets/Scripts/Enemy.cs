@@ -20,4 +20,9 @@ public class Enemy : MonoBehaviour
         Debug.Log("Enemy died!");
         Destroy(gameObject);
     }
+
+    public void Stun()
+    {
+
+    }
 }

@@ -7,7 +7,7 @@ public class WeaponRaycast : MonoBehaviour
     // Прикрепление к скрипту нужных объектов
     //public PlayerHealth playerHealth; // Ссылка на скрипт здоровья игрока
     public Camera playerCamera; // Ссылка на камеру игрока
-    public Text healthIndicator; // Текстовый элемент для отображения здоровья врага
+    //public Text healthIndicator; // Текстовый элемент для отображения здоровья врага
     public Transform gunEnd; // Точка, откуда будут вылетать пули
     public LineRenderer tracerEffect; // Эффект следа пули
     public GameObject impactEffect; // Эффект удара пули
@@ -34,6 +34,7 @@ public class WeaponRaycast : MonoBehaviour
 
     void Start()
     {
+        playerCamera = FindObjectOfType<Camera>();
         // Отключаем эффект следа пули в начале
         if (tracerEffect != null)
         {
@@ -42,7 +43,7 @@ public class WeaponRaycast : MonoBehaviour
         //PlayerHealth.OnDeath += HealPlayer; // Подписываемся на событие смерти игрока
     }
 
-    void Update()
+    /*void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
@@ -50,9 +51,9 @@ public class WeaponRaycast : MonoBehaviour
             //playerHealth.TakeDamage(takingDamage);
         }
         CheckEnemyHealth(); // Проверяем здоровье врага и отображаем его
-    }
+    }*/
 
-    void Shoot()
+    public void Shoot()
     {
         // Создаем луч из центра экрана игрока
         Ray ray = playerCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
@@ -99,7 +100,7 @@ public class WeaponRaycast : MonoBehaviour
         tracer.enabled = false; // Выключаем эффект следа пули
         Destroy(tracer.gameObject); // Уничтожаем объект следа пули
     }
-
+    /*
     void CheckEnemyHealth()
     {
         // Создаем луч из центра экрана игрока
@@ -108,7 +109,7 @@ public class WeaponRaycast : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, weaponRange)) // Проверяем, попал ли луч во что-то на слое врагов
         {
-            /*PlayerHealth enemyHealth = hit.collider.GetComponent<PlayerHealth>(); // Получаем компонент PlayerHealth у врага
+            PlayerHealth enemyHealth = hit.collider.GetComponent<PlayerHealth>(); // Получаем компонент PlayerHealth у врага
             if (enemyHealth != null) // Если враг имеет компонент PlayerHealth, отображаем его здоровье
             {
                 healthIndicator.text = "Enemy Health: " + Mathf.RoundToInt(enemyHealth.currentHealth).ToString(); // Отображаем здоровье в текстовом элементе
@@ -116,11 +117,11 @@ public class WeaponRaycast : MonoBehaviour
             else
             {
                 healthIndicator.text = ""; // Если враг не имеет компонента PlayerHealth, скрываем текстовый элемент
-            }*/
+            }
         }
         else
         {
             healthIndicator.text = ""; // Если луч не попал во что-то на слое врагов, скрываем текстовый элемент
         }
-    }
+    }*/
 }

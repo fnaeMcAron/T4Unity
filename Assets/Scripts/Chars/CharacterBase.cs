@@ -10,6 +10,9 @@ public abstract class CharacterBase : MonoBehaviour
     [Header("йНЛОНМЕМРШ")]
     protected Rigidbody rb;
     protected PlayerInput playerInput;
+    protected Animator animator;
+    [SerializeField] protected GameObject cameraPivot;
+    [SerializeField] protected CameraFollow cameraFollow;
 
     [Header("мЮЯРПНИЙХ")]
     public float moveSpeed = 5f;
@@ -34,10 +37,19 @@ public abstract class CharacterBase : MonoBehaviour
     private bool isGrounded;
     private Transform cameraTransform;
 
+    private readonly int isMovingHash = Animator.StringToHash("IsMoving");
+    private readonly int isIdleHash = Animator.StringToHash("isIdle");
+
+    // рЮИЛЕП ДКЪ ЮМХЛЮЖХХ РЮМЖЮ
+    private float idleTimer = 0f;
+    private readonly float danceTriggerTime = 10f; // 10 ЯЕЙСМД ДН РЮМЖЮ
+    private bool isIdle = false;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
         playerInput = GetComponent<PlayerInput>();
+        animator = GetComponent<Animator>();
 
         if (Camera.main != null)
             cameraTransform = Camera.main.transform;
@@ -48,12 +60,69 @@ public abstract class CharacterBase : MonoBehaviour
         } */
     }
 
+    private void UpdateAnimations()
+    {
+        if (animator == null) return;
+
+        bool isMoving = moveInput.magnitude > 0.1f;
+
+        // еЯКХ ОЕПЯНМЮФ ДБХФЕРЯЪ, ЯАПЮЯШБЮЕЛ РЮИЛЕП Х БШЙКЧВЮЕЛ РЮМЕЖ
+        if (isMoving)
+        {
+            if (isIdle)
+            {
+                isIdle = false;
+                animator.SetBool(isIdleHash, false);
+                Debug.Log("рЮМЖШ ОПЕЙПЮЫЕМШ - ОЕПЯНМЮФ ДБХФЕРЯЪ");
+            }
+            idleTimer = 0f;
+            animator.SetBool(isMovingHash, true);
+        }
+        else
+        {
+            animator.SetBool(isMovingHash, false);
+
+            // еЯКХ МЕ ДБХФЕЛЯЪ Х МЕ РЮМЖСЕЛ, СБЕКХВХБЮЕЛ РЮИЛЕП
+            if (!isIdle)
+            {
+                idleTimer += Time.deltaTime;
+
+                // оПНБЕПЪЕЛ, ОПНЬКН КХ 10 ЯЕЙСМД АЕГДЕИЯРБХЪ
+                if (idleTimer >= danceTriggerTime)
+                {
+                    StartDancing();
+                }
+            }
+        }
+
+        Debug.Log($"дБХФЕМХЕ: {isMoving}, рЮИЛЕП: {idleTimer:F1}, рЮМЕЖ: {isIdle}");
+    }
+
+    private void StartDancing()
+    {
+        isIdle = true;
+        animator.SetBool(isIdleHash, true);
+        Debug.Log("бЙКЧВЮЕЛ ЮМХЛЮЖХЧ РЮМЖЮ!");
+    }
+
+    // лЕРНД ДКЪ ОПХМСДХРЕКЭМНЦН ОПЕЙПЮЫЕМХЪ РЮМЖЮ (МЮОПХЛЕП, ОПХ ЮРЮЙЕ)
+    public void StopDancing()
+    {
+        if (isIdle)
+        {
+            isIdle = false;
+            idleTimer = 0f;
+            animator.SetBool(isIdleHash, false);
+            Debug.Log("рЮМЕЖ ОПХМСДХРЕКЭМН НЯРЮМНБКЕМ");
+        }
+    }
+
     void Update()
     {
         Move();
+        UpdateAnimations();
     }
 
-    // лернд аюттнб юккнннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннн
     public virtual void ApplyMusicBuff(MusicBuff buff)
     {
         activeMusicBuff = buff;
@@ -71,7 +140,6 @@ public abstract class CharacterBase : MonoBehaviour
         speedMultiplier = 1f;
         attackSpeedMultiplier = 1f;
     }
-    // нннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннннн
 
     public virtual void OnCharacterSelected()
     {
@@ -88,7 +156,6 @@ public abstract class CharacterBase : MonoBehaviour
     public void OnMove(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
-        Debug.Log($"бБНД ОНКСВЕМ: {moveInput}");
     }
 
     public void OnMeleeAttack(InputValue value)

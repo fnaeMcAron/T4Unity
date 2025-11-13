@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RaycastManager : MonoBehaviour
+public class WormManager : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()

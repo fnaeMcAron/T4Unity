@@ -132,7 +132,7 @@ public class StyleManager : MonoBehaviour
         {
             styleLight.color = currentStyleLevel.styleColor;
         }
-
+        Debug.Log(currentStyleLevel.levelName);
         // TO DO: звуковые эффекты, UI оповещения
     }
 

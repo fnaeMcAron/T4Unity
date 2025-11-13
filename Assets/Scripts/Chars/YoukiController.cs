@@ -8,6 +8,7 @@ public class YoukiController : CharacterBase
     public MusicBuff[] availableTracks;
 
     [Header("Настройки Еки")]
+    public WeaponRaycast raycast;
     public TMP_Text songText;
     public GameObject defaultBuffEffect;
     public CharacterBase[] allCharacters;
@@ -22,14 +23,17 @@ public class YoukiController : CharacterBase
 
     public override void PerformMeleeAttack()
     {
+        cameraFollow.SetTarget(cameraPivot.transform);
         // TODO: добавить мультипликаторы урона к итоговой реализации
         Debug.Log($"Еки: атака ножами в ближнем бою");
         //PlayKnifeAttack();
         ShootRevolver();
+
     }
 
     public override void PerformRangedAttack()
     {
+        cameraFollow.SetTarget(cameraPivot.transform);
         // TODO: добавить мультипликаторы урона к итоговой реализации
         Debug.Log("Еки: выстрел из револьвера");
         ShootRevolver();
@@ -75,39 +79,7 @@ public class YoukiController : CharacterBase
 
     private void ShootRevolver()
     {
-        // Создаем луч из центра экрана игрока
-        Ray ray = this.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-        RaycastHit hitInfo;
-
-        // Проверяем попадание луча в объект
-        if (Physics.Raycast(ray, out hitInfo, weaponRange))
-        {
-            /*PlayerHealth hitPlayerHealth = hitInfo.collider.GetComponent<PlayerHealth>(); // Получаем компонент PlayerHealth на объекте, в который попал луч
-            if (hitPlayerHealth != null) // Если объект имеет компонент PlayerHealth, наносим ему урон
-            {
-                hitPlayerHealth.TakeDamage(dealingDamage);
-                Debug.Log($"Нанесено {dealingDamage} урона");
-            }*/
-
-            GameObject impactObj = Instantiate(impactEffect, hitInfo.point, Quaternion.LookRotation(hitInfo.normal)); // Воспроизводим эффект попадания
-            Destroy(impactObj, impactEffectDuration); // Уничтожаем эффект через определенное время
-            Debug.Log("Попадание");
-
-            // Отображаем след пули
-            LineRenderer tracer = Instantiate(tracerEffect, gunEnd.position, Quaternion.identity);
-            StartCoroutine(ShowTracerEffect(tracer, gunEnd.position, hitInfo.point));
-        }
-        else
-        {
-            Debug.Log("Промах");
-            Vector3 endPoint = ray.origin + ray.direction * Mathf.Min(weaponRange, weaponRange); // Определяем точку, где луч должен закончиться
-            GameObject impactObj = Instantiate(impactEffect, endPoint, Quaternion.identity); // Воспроизводим эффект попадания на этой точке
-            Destroy(impactObj, impactEffectDuration); // Уничтожаем эффект через определенное время
-
-            // Отображаем след пули
-            LineRenderer tracer = Instantiate(tracerEffect, gunEnd.position, Quaternion.identity);
-            StartCoroutine(ShowTracerEffect(tracer, gunEnd.position, endPoint));
-        }
+        raycast.Shoot();
     }
 
     // Публичные методы для управления музыкой
@@ -160,6 +132,7 @@ public class YoukiController : CharacterBase
             }
         }
         Debug.Log($"Баффы сняты");
+        songText.text = $"Now playing:\n";
     }
 
     public void PlaySpecificTrack(int trackIndex)
