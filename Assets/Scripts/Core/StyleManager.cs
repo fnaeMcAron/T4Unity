@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 using System.Collections.Generic;
 
 [System.Serializable]
@@ -26,6 +27,7 @@ public class StyleManager : MonoBehaviour
     [Header("Визуальные эффекты")]
     public ParticleSystem styleParticles;
     public Light styleLight;
+    public TMP_Text text;
 
     private float timeSinceLastAction = 0f;
     private bool isDecayActive = false;
@@ -70,7 +72,7 @@ public class StyleManager : MonoBehaviour
             if (timeSinceLastAction >= styleDecayDelay)
             {
                 // Постепенная потеря очков стиля
-                currentStylePoints = Mathf.Max(0, currentStylePoints - (int)(styleDecayRate * Time.deltaTime));
+                currentStylePoints = Mathf.Max(0, currentStylePoints - (int)(styleDecayRate * Time.deltaTime) * 10);
                 UpdateStyleLevel();
             }
         }
@@ -145,6 +147,7 @@ public class StyleManager : MonoBehaviour
 
         // Текст с очками
         // TO DO: использовать TextMesh Pro для лучшего отображения
+        text.text = currentStyleLevel.levelName;
         Destroy(effect, 2f);
     }
 

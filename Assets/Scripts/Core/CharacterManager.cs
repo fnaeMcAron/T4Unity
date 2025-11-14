@@ -5,7 +5,7 @@ using UnityEngine;
 public class CharacterManager : MonoBehaviour
 {
     [Header("ќбщие настройки персонажей")]
-    public int worms = 100;
+    public WormManager wormManager;
     public CharacterBase[] characters;
     public TMP_Text text;
     public CameraFollow cameraFollow;
@@ -16,6 +16,8 @@ public class CharacterManager : MonoBehaviour
 
     public CharacterBase CurrentCharacter => currentCharacter;
     public int CurrentCharacterIndex => currentCharacterIndex;
+    public delegate void DeathAction();
+    public static event DeathAction OnDeath; // —обытие при смерти игрока
 
     void Start()
     {
@@ -28,7 +30,20 @@ public class CharacterManager : MonoBehaviour
 
     private void LateUpdate()
     {
-        text.text = "„≈–¬я„ »»»»: " + worms;
+        text.text = "„≈–¬я„ »»»»: " + wormManager.GetWorms();
+        if (wormManager.GetWorms() <= 0f)
+        {
+            Die(); // ¬ызываем метод при смерти игрока
+        }
+    }
+    void Die()
+    {
+        if (OnDeath != null)
+        {
+            OnDeath(); // ¬ызываем событие при смерти игрока
+        }
+
+        Destroy(this.gameObject); // ”ничтожаем игрока
     }
 
     public void SwitchToCharacter(int index)
