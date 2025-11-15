@@ -66,29 +66,23 @@ public class CameraFollow : MonoBehaviour
     void SetupInputActions()
     {
         lookAction = cameraInput.Player.Look;
-        //zoomAction = cameraInput.Player.Zoom;
     }
 
     void OnEnable()
     {
         lookAction?.Enable();
-        zoomAction?.Enable();
-        cursorAction?.Enable();
         cameraInput?.Enable();
     }
 
     void OnDisable()
     {
         lookAction?.Disable();
-        zoomAction?.Disable();
-        cursorAction?.Disable();
         cameraInput?.Disable();
     }
 
     void Update()
     {
         HandleCameraRotation();
-        HandleCameraZoom();
         UpdateCameraPosition();
     }
 
@@ -114,18 +108,6 @@ public class CameraFollow : MonoBehaviour
         currentRotationX = Mathf.Clamp(currentRotationX, -verticalAngleLimit, verticalAngleLimit);
     }
 
-    void HandleCameraZoom()
-    {
-        //Vector2 zoomInput = zoomAction.ReadValue<Vector2>();
-        //float scroll = zoomInput.y;
-
-        //if (scroll != 0)
-        //{
-        //    currentDistance -= scroll * zoomSpeed * 0.1f;
-        //    currentDistance = Mathf.Clamp(currentDistance, minDistance, maxDistance);
-        //}
-    }
-
     void UpdateCameraPosition()
     {
         Quaternion rotation = Quaternion.Euler(currentRotationX, currentRotationY, 0);
@@ -134,7 +116,6 @@ public class CameraFollow : MonoBehaviour
         transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref velocity, smoothSpeed);
         transform.LookAt(target.position + Vector3.up * offset.y);
     }
-
 
     void FindPlayer()
     {
@@ -157,7 +138,6 @@ public class CameraFollow : MonoBehaviour
     {
         if (target != null)
         {
-            // Ставим камеру позади персонажа
             currentRotationY = target.eulerAngles.y;
             currentRotationX = 20f;
         }

@@ -53,12 +53,12 @@ public class RodionController : CharacterBase
     {
         if (isHold)
         {
-            Debug.Log("Родион: SMOKIN` SEXY STYLE");
-            SwitchStyleSystem(true);
+            Debug.Log("Родион: Таунт");
+            Taunt(true);
         }
         else
         {
-            SwitchStyleSystem(false);
+            Taunt(false);
         }
 
 
@@ -78,10 +78,9 @@ public class RodionController : CharacterBase
         //TO DO: своровать рейкаст из револьвера еки
     }
 
-    void SwitchStyleSystem(bool active)
+    void Taunt(bool isHold)
     {
-        _styleManager.enabled = active;
-        //TO DO: как сделать систему стиля?
+
     }
 }
 

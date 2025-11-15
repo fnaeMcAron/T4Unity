@@ -191,15 +191,6 @@ public partial class @TInputControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Taunt"",
-                    ""type"": ""Button"",
-                    ""id"": ""6cb4fc25-2721-4910-9443-3bce83170778"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Ability"",
                     ""type"": ""Button"",
                     ""id"": ""cb8ab794-a2cb-4833-a3a7-773f22dd64e5"",
@@ -209,22 +200,13 @@ public partial class @TInputControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""PrevWeapon"",
-                    ""type"": ""Button"",
+                    ""name"": ""SwitchWeapon"",
+                    ""type"": ""Value"",
                     ""id"": ""a4af02c5-fbb3-427b-ab4a-d7b043650d4b"",
-                    ""expectedControlType"": """",
+                    ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""NextWeapon"",
-                    ""type"": ""Button"",
-                    ""id"": ""6c84a5b7-b413-488f-a793-555e997eaceb"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
+                    ""initialStateCheck"": true
                 },
                 {
                     ""name"": ""ResetCameraANDToggleTargetLock"",
@@ -492,17 +474,6 @@ public partial class @TInputControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""a80d92b6-20cd-4150-9686-eae9107de366"",
-                    ""path"": ""<Keyboard>/q"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Keyboard and Mouse"",
-                    ""action"": ""Taunt"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""07a9e60d-9509-434e-a755-7ec30c7d7343"",
                     ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
@@ -520,28 +491,6 @@ public partial class @TInputControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
                     ""action"": ""Ability"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""f9d4e050-a86e-4f45-8214-47a5fca107cb"",
-                    ""path"": """",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""PrevWeapon"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""b4151f66-4795-4f59-811a-159c5ac060a8"",
-                    ""path"": """",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""NextWeapon"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -577,6 +526,116 @@ public partial class @TInputControls: IInputActionCollection2, IDisposable
                     ""action"": ""Look"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""b1a7c08d-4155-4c92-9e92-ea0d2a9a12d2"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SwitchWeapon"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""52504f4d-c207-4cad-90d2-1c949f135a1e"",
+                    ""path"": ""<Mouse>/scroll/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard and Mouse"",
+                    ""action"": ""SwitchWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""f8d4cc66-34a7-4264-8b12-567d772db256"",
+                    ""path"": ""<Mouse>/scroll/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard and Mouse"",
+                    ""action"": ""SwitchWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""42ea35be-bcf2-4bb8-a23a-93d67e58879c"",
+                    ""path"": ""<Mouse>/scroll/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard and Mouse"",
+                    ""action"": ""SwitchWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""31556436-bfbd-4237-b106-21d6566a3d96"",
+                    ""path"": ""<Mouse>/scroll/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard and Mouse"",
+                    ""action"": ""SwitchWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""520a59e7-db5d-482d-9e6f-ae0b5878b2dc"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SwitchWeapon"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""c986446a-e0b5-4479-92de-8a3f7211d852"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""SwitchWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""46e55d66-a647-4941-81ea-891e764ab61e"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""SwitchWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""a67e0a39-594a-49a9-a588-f8cc7e26943a"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""SwitchWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""482a5a5e-1e8c-45ba-8461-6d9732e7dfd2"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""SwitchWeapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -842,10 +901,8 @@ public partial class @TInputControls: IInputActionCollection2, IDisposable
         m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Dodge = m_Player.FindAction("Dodge", throwIfNotFound: true);
-        m_Player_Taunt = m_Player.FindAction("Taunt", throwIfNotFound: true);
         m_Player_Ability = m_Player.FindAction("Ability", throwIfNotFound: true);
-        m_Player_PrevWeapon = m_Player.FindAction("PrevWeapon", throwIfNotFound: true);
-        m_Player_NextWeapon = m_Player.FindAction("NextWeapon", throwIfNotFound: true);
+        m_Player_SwitchWeapon = m_Player.FindAction("SwitchWeapon", throwIfNotFound: true);
         m_Player_ResetCameraANDToggleTargetLock = m_Player.FindAction("ResetCameraANDToggleTargetLock", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
@@ -951,10 +1008,8 @@ public partial class @TInputControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Attack;
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Dodge;
-    private readonly InputAction m_Player_Taunt;
     private readonly InputAction m_Player_Ability;
-    private readonly InputAction m_Player_PrevWeapon;
-    private readonly InputAction m_Player_NextWeapon;
+    private readonly InputAction m_Player_SwitchWeapon;
     private readonly InputAction m_Player_ResetCameraANDToggleTargetLock;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
@@ -1012,21 +1067,13 @@ public partial class @TInputControls: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @Dodge => m_Wrapper.m_Player_Dodge;
         /// <summary>
-        /// Provides access to the underlying input action "Player/Taunt".
-        /// </summary>
-        public InputAction @Taunt => m_Wrapper.m_Player_Taunt;
-        /// <summary>
         /// Provides access to the underlying input action "Player/Ability".
         /// </summary>
         public InputAction @Ability => m_Wrapper.m_Player_Ability;
         /// <summary>
-        /// Provides access to the underlying input action "Player/PrevWeapon".
+        /// Provides access to the underlying input action "Player/SwitchWeapon".
         /// </summary>
-        public InputAction @PrevWeapon => m_Wrapper.m_Player_PrevWeapon;
-        /// <summary>
-        /// Provides access to the underlying input action "Player/NextWeapon".
-        /// </summary>
-        public InputAction @NextWeapon => m_Wrapper.m_Player_NextWeapon;
+        public InputAction @SwitchWeapon => m_Wrapper.m_Player_SwitchWeapon;
         /// <summary>
         /// Provides access to the underlying input action "Player/ResetCameraANDToggleTargetLock".
         /// </summary>
@@ -1090,18 +1137,12 @@ public partial class @TInputControls: IInputActionCollection2, IDisposable
             @Dodge.started += instance.OnDodge;
             @Dodge.performed += instance.OnDodge;
             @Dodge.canceled += instance.OnDodge;
-            @Taunt.started += instance.OnTaunt;
-            @Taunt.performed += instance.OnTaunt;
-            @Taunt.canceled += instance.OnTaunt;
             @Ability.started += instance.OnAbility;
             @Ability.performed += instance.OnAbility;
             @Ability.canceled += instance.OnAbility;
-            @PrevWeapon.started += instance.OnPrevWeapon;
-            @PrevWeapon.performed += instance.OnPrevWeapon;
-            @PrevWeapon.canceled += instance.OnPrevWeapon;
-            @NextWeapon.started += instance.OnNextWeapon;
-            @NextWeapon.performed += instance.OnNextWeapon;
-            @NextWeapon.canceled += instance.OnNextWeapon;
+            @SwitchWeapon.started += instance.OnSwitchWeapon;
+            @SwitchWeapon.performed += instance.OnSwitchWeapon;
+            @SwitchWeapon.canceled += instance.OnSwitchWeapon;
             @ResetCameraANDToggleTargetLock.started += instance.OnResetCameraANDToggleTargetLock;
             @ResetCameraANDToggleTargetLock.performed += instance.OnResetCameraANDToggleTargetLock;
             @ResetCameraANDToggleTargetLock.canceled += instance.OnResetCameraANDToggleTargetLock;
@@ -1149,18 +1190,12 @@ public partial class @TInputControls: IInputActionCollection2, IDisposable
             @Dodge.started -= instance.OnDodge;
             @Dodge.performed -= instance.OnDodge;
             @Dodge.canceled -= instance.OnDodge;
-            @Taunt.started -= instance.OnTaunt;
-            @Taunt.performed -= instance.OnTaunt;
-            @Taunt.canceled -= instance.OnTaunt;
             @Ability.started -= instance.OnAbility;
             @Ability.performed -= instance.OnAbility;
             @Ability.canceled -= instance.OnAbility;
-            @PrevWeapon.started -= instance.OnPrevWeapon;
-            @PrevWeapon.performed -= instance.OnPrevWeapon;
-            @PrevWeapon.canceled -= instance.OnPrevWeapon;
-            @NextWeapon.started -= instance.OnNextWeapon;
-            @NextWeapon.performed -= instance.OnNextWeapon;
-            @NextWeapon.canceled -= instance.OnNextWeapon;
+            @SwitchWeapon.started -= instance.OnSwitchWeapon;
+            @SwitchWeapon.performed -= instance.OnSwitchWeapon;
+            @SwitchWeapon.canceled -= instance.OnSwitchWeapon;
             @ResetCameraANDToggleTargetLock.started -= instance.OnResetCameraANDToggleTargetLock;
             @ResetCameraANDToggleTargetLock.performed -= instance.OnResetCameraANDToggleTargetLock;
             @ResetCameraANDToggleTargetLock.canceled -= instance.OnResetCameraANDToggleTargetLock;
@@ -1503,13 +1538,6 @@ public partial class @TInputControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnDodge(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "Taunt" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnTaunt(InputAction.CallbackContext context);
-        /// <summary>
         /// Method invoked when associated input action "Ability" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
@@ -1517,19 +1545,12 @@ public partial class @TInputControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnAbility(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "PrevWeapon" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "SwitchWeapon" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnPrevWeapon(InputAction.CallbackContext context);
-        /// <summary>
-        /// Method invoked when associated input action "NextWeapon" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnNextWeapon(InputAction.CallbackContext context);
+        void OnSwitchWeapon(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "ResetCameraANDToggleTargetLock" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>

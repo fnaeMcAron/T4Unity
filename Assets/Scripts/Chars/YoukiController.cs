@@ -21,20 +21,30 @@ public class YoukiController : CharacterBase
         musicManager = MusicManager.Instance;
     }
 
+    private void OnWeaponChanged(int newWeaponIndex)
+    {
+        Debug.Log($"Еки сменил оружие на: {weaponSlots[newWeaponIndex].slotName}");
+
+        // Дополнительная логика при смене оружия для Еки
+        switch (newWeaponIndex)
+        {
+            case 0: // Ножи
+                Debug.Log("Еки готов к ближнему бою!");
+                break;
+            case 1: // Револьвер
+                Debug.Log("Еки готов к дальнему бою!");
+                break;
+        }
+    }
+
     public override void PerformMeleeAttack()
     {
-        cameraFollow.SetTarget(cameraPivot.transform);
-        // TODO: добавить мультипликаторы урона к итоговой реализации
         Debug.Log($"Еки: атака ножами в ближнем бою");
-        //PlayKnifeAttack();
-        ShootRevolver();
-
+        PlayKnifeAttack();
     }
 
     public override void PerformRangedAttack()
     {
-        cameraFollow.SetTarget(cameraPivot.transform);
-        // TODO: добавить мультипликаторы урона к итоговой реализации
         Debug.Log("Еки: выстрел из револьвера");
         ShootRevolver();
     }
@@ -59,14 +69,8 @@ public class YoukiController : CharacterBase
         Debug.Log("Еки: уворот");
     }
 
-
-
-
-
-
     private void PlayKnifeAttack()
     {
-        // Визуальный эффект атаки ножами
         for (int i = 0; i < 2; i++)
         {
             GameObject knife = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -79,10 +83,16 @@ public class YoukiController : CharacterBase
 
     private void ShootRevolver()
     {
-        raycast.Shoot();
+        if (raycast != null)
+        {
+            raycast.Shoot();
+        }
+        else
+        {
+            Debug.LogWarning("WeaponRaycast не назначен для Еки!");
+        }
     }
 
-    // Публичные методы для управления музыкой
     private void SwitchMusicTrack()
     {
         int nextTrackIndex = (currentTrackIndex + 1) % availableTracks.Length;
@@ -108,7 +118,6 @@ public class YoukiController : CharacterBase
         Debug.Log($"Пытаюсь применить бафф: {currentBuff.buffName}");
 
         int buffsApplied = 0;
-
         foreach (CharacterBase character in allCharacters)
         {
             if (character != null)
@@ -164,11 +173,3 @@ public class YoukiController : CharacterBase
         Gizmos.DrawSphere(transform.position, 8f);
     }
 }
-
-/*TODO
- * добавить снижение разрешения при выборе родиона
- * скачать и вставить прозрачные бандикам и фуллхд
- * начать делать врагов
- * добавить рейкаст кому надо и баллистику кому надо (своровать из курсового)
- * сделать радиальное меню для выбора треков Еки
- */
