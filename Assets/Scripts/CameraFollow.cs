@@ -71,12 +71,14 @@ public class CameraFollow : MonoBehaviour
     void OnEnable()
     {
         lookAction?.Enable();
+        cursorAction?.Enable();
         cameraInput?.Enable();
     }
 
     void OnDisable()
     {
         lookAction?.Disable();
+        cursorAction?.Disable();
         cameraInput?.Disable();
     }
 
@@ -116,6 +118,7 @@ public class CameraFollow : MonoBehaviour
         transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref velocity, smoothSpeed);
         transform.LookAt(target.position + Vector3.up * offset.y);
     }
+
 
     void FindPlayer()
     {
@@ -169,3 +172,4 @@ public class CameraFollow : MonoBehaviour
         }
     }
 }
+

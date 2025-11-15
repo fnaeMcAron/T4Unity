@@ -48,15 +48,12 @@ public abstract class CharacterBase : MonoBehaviour
 
     private readonly int isMovingHash = Animator.StringToHash("IsMoving");
     private readonly int isIdleHash = Animator.StringToHash("isIdle");
-    private readonly int weaponTypeHash = Animator.StringToHash("WeaponType");
+    //private readonly int weaponTypeHash = Animator.StringToHash("WeaponType");
 
     // Таймер для анимации танца
     private float idleTimer = 0f;
     private readonly float danceTriggerTime = 10f; // 10 секунд до танца
     private bool isIdle = false;
-
-    // Событие смены оружия
-    public System.Action<int> OnWeaponSwitched;
 
     void Awake()
     {
@@ -81,7 +78,7 @@ public abstract class CharacterBase : MonoBehaviour
             }
         }
 
-        UpdateWeaponAnimations();
+        //UpdateWeaponAnimations();
     }
 
     private void UpdateAnimations()
@@ -146,46 +143,27 @@ public abstract class CharacterBase : MonoBehaviour
         UpdateAnimations();
     }
 
-    // НОВЫЙ МЕТОД: Обработка смены оружия
     public void OnSwitchWeapon(InputAction.CallbackContext context)
     {
-        if (context.performed)
+        if (context.started)
         {
             Vector2 scrollValue = context.ReadValue<Vector2>();
-            int direction = GetSwitchDirection(scrollValue);
 
-            if (direction != 0)
+            if (scrollValue != Vector2.zero)
             {
-                SwitchWeapon(direction);
+                SwitchWeapon(scrollValue);
             }
         }
     }
 
-    private int GetSwitchDirection(Vector2 scrollValue)
-    {
-        // Обработка скролла мыши
-        if (scrollValue.y != 0)
-        {
-            return scrollValue.y > 0 ? 1 : -1;
-        }
-
-        // Обработка геймпадных триггеров (предполагаем, что up/down - это y компонент)
-        if (scrollValue.x != 0)
-        {
-            return scrollValue.x > 0 ? 1 : -1;
-        }
-
-        return 0;
-    }
-
-    private void SwitchWeapon(int direction)
+    private void SwitchWeapon(Vector2 direction)
     {
         int newIndex = currentWeaponIndex;
 
         // Циклическая смена по массиву
         do
         {
-            newIndex = (newIndex + direction + weaponSlots.Length) % weaponSlots.Length;
+            newIndex = (newIndex + (int)direction.y + weaponSlots.Length) % weaponSlots.Length;
         }
         while (!weaponSlots[newIndex].isAvailable && newIndex != currentWeaponIndex);
 
@@ -198,28 +176,23 @@ public abstract class CharacterBase : MonoBehaviour
 
     private void SetCurrentWeapon(int newIndex)
     {
-        // Деактивируем текущее оружие
         if (weaponSlots[currentWeaponIndex].weaponObject != null)
         {
             weaponSlots[currentWeaponIndex].weaponObject.SetActive(false);
         }
 
-        // Активируем новое оружие
         currentWeaponIndex = newIndex;
         if (weaponSlots[currentWeaponIndex].weaponObject != null)
         {
             weaponSlots[currentWeaponIndex].weaponObject.SetActive(true);
         }
 
-        // Обновляем анимации
-        UpdateWeaponAnimations();
-
-        // Вызываем событие
-        OnWeaponSwitched?.Invoke(currentWeaponIndex);
+        //UpdateWeaponAnimations();
 
         Debug.Log($"Переключено на оружие: {weaponSlots[currentWeaponIndex].slotName}");
     }
 
+    /*
     private void UpdateWeaponAnimations()
     {
         if (animator != null)
@@ -227,7 +200,7 @@ public abstract class CharacterBase : MonoBehaviour
             // 0 - ближнее оружие, 1 - дальнее оружие
             animator.SetInteger(weaponTypeHash, currentWeaponIndex);
         }
-    }
+    }*/
 
     // Метод для принудительной установки оружия по индексу
     public void SetWeaponByIndex(int index)
@@ -238,14 +211,12 @@ public abstract class CharacterBase : MonoBehaviour
         }
     }
 
-    // Метод для блокировки/разблокировки оружия
     public void SetWeaponAvailable(int index, bool available)
     {
         if (index >= 0 && index < weaponSlots.Length)
         {
             weaponSlots[index].isAvailable = available;
 
-            // Если текущее оружие стало недоступно, переключаемся на первое доступное
             if (!available && currentWeaponIndex == index)
             {
                 SwitchToFirstAvailableWeapon();
@@ -300,32 +271,19 @@ public abstract class CharacterBase : MonoBehaviour
         moveInput = context.ReadValue<Vector2>();
     }
 
-    // ОБНОВЛЕННЫЙ МЕТОД: Теперь проверяет текущее оружие
-    public void OnAttack(InputValue value)
+    public void OnAttack(InputAction.CallbackContext context)
     {
-        if (value.isPressed)
+        if (context.performed)
         {
-            if (currentWeaponIndex == 0) // Ближнее оружие
+            if (currentWeaponIndex == 0)
             {
                 PerformMeleeAttack();
             }
-            else if (currentWeaponIndex == 1) // Дальнее оружие
+            else if (currentWeaponIndex == 1)
             {
                 PerformRangedAttack();
             }
         }
-    }
-
-    public void OnJump(InputValue value)
-    {
-        if (value.isPressed)
-            Jump();
-    }
-
-    public void OnDodge(InputValue value)
-    {
-        if (value.isPressed)
-            Dodge();
     }
 
     public void OnAbility(InputAction.CallbackContext context)
@@ -351,7 +309,7 @@ public abstract class CharacterBase : MonoBehaviour
                 return;
         }
 
-        // движение относительно камеры
+        // движение относительно камеры (каким образом я сам не понимаю)
         Vector3 cameraForward = Vector3.Scale(cameraTransform.forward, new Vector3(1, 0, 1));
         Vector3 cameraRight = Vector3.Scale(cameraTransform.right, new Vector3(1, 0, 1));
 

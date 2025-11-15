@@ -8,17 +8,19 @@ public class Enemy : MonoBehaviour
     public float health = 100f;
     [SerializeField] NavMeshAgent agent;
     [SerializeField] Rigidbody rb;
-    [SerializeField] Collider collider;
+    [SerializeField] Collider enemyCollider;
+    CharacterManager _charman;
 
     void Start()
     {
-        player = GameObject.FindGameObjectsWithTag("Player");
-        //agent = GetComponent<NavMeshAgent>();
+        player = GameObject.FindGameObjectsWithTag("GameController");
+        agent = GetComponent<NavMeshAgent>();
+        _charman = player[0].gameObject.GetComponent<CharacterManager>();
     }
 
     public void Update()
     {
-        agent.SetDestination(player[0].transform.position);
+        agent.SetDestination(_charman.CurrentCharacter.transform.position);
         agent.autoRepath = true;
         agent.autoBraking = true;
     }
@@ -36,7 +38,7 @@ public class Enemy : MonoBehaviour
 
     private void Die()
     {
-        Debug.Log("Enemy died!");
+        Debug.Log("Enemy died");
         Destroy(gameObject);
     }
 

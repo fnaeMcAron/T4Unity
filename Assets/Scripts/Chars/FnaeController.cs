@@ -8,28 +8,25 @@ public class FnaeController : CharacterBase
 
     public override void PerformMeleeAttack()
     {
-        // TODO: добавить мультипликаторы урона к итоговой реализации
-        Debug.Log($"‘най: атака перчаткой в ближнем бою {damageMultiplier}");
+        Debug.Log($"‘най: атака {damageMultiplier}");
         CreateBurnEffect();
     }
 
     public override void PerformRangedAttack()
     {
-        // TODO: добавить мультипликаторы урона к итоговой реализации
-        Debug.Log($"‘най: атака перчаткой в дальнем бою");
+        Debug.Log($"‘най: атака {damageMultiplier}");
         ShootFireProjectile();
     }
 
     public override void UseAbility(bool isHold)
     {
-        // TODO: добавить мультипликаторы урона к итоговой реализации
-        Debug.Log("‘най: молотов");
+        Debug.Log($"‘най: молотов {damageMultiplier}");
         IgniteArea();
     }
 
     public override void Dodge()
     {
-        Debug.Log("‘най: уворот");
+        Debug.Log("‘най: уворот на тиранозавре");
     }
 
 
@@ -39,6 +36,7 @@ public class FnaeController : CharacterBase
 
     private void CreateBurnEffect()
     {
+        // TODO: добавить мультипликаторы урона к итоговой реализации
         if (fireEffect != null)
         {
             Instantiate(fireEffect, transform.position, Quaternion.identity);
@@ -47,6 +45,7 @@ public class FnaeController : CharacterBase
 
     private void ShootFireProjectile()
     {
+        // TODO: добавить мультипликаторы урона к итоговой реализации
         GameObject projectile = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         projectile.transform.position = transform.position + transform.forward;
         projectile.GetComponent<Renderer>().material.color = Color.red;
@@ -55,6 +54,7 @@ public class FnaeController : CharacterBase
 
     private void IgniteArea()
     {
+        // TODO: добавить мультипликаторы урона к итоговой реализации
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, 5f);
         foreach (var hitCollider in hitColliders)
         {

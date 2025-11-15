@@ -12,7 +12,6 @@ public class FinaControler : CharacterBase
 
     public override void PerformRangedAttack()
     {
-        // TODO: добавить мультипликаторы урона к итоговой реализации
         Debug.Log("Фина: атака копьем в дальнем бою");
         ShootSpearProjectile();
     }
@@ -34,6 +33,7 @@ public class FinaControler : CharacterBase
 
     void ShootSpearProjectile()
     {
+        // TODO: добавить мультипликаторы урона к итоговой реализации
         GameObject projectile = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         projectile.transform.position = transform.position + transform.forward;
         projectile.GetComponent<Renderer>().material.color = Color.red;

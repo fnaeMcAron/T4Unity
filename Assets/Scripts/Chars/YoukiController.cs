@@ -21,31 +21,13 @@ public class YoukiController : CharacterBase
         musicManager = MusicManager.Instance;
     }
 
-    private void OnWeaponChanged(int newWeaponIndex)
-    {
-        Debug.Log($"Еки сменил оружие на: {weaponSlots[newWeaponIndex].slotName}");
-
-        // Дополнительная логика при смене оружия для Еки
-        switch (newWeaponIndex)
-        {
-            case 0: // Ножи
-                Debug.Log("Еки готов к ближнему бою!");
-                break;
-            case 1: // Револьвер
-                Debug.Log("Еки готов к дальнему бою!");
-                break;
-        }
-    }
-
     public override void PerformMeleeAttack()
     {
-        Debug.Log($"Еки: атака ножами в ближнем бою");
         PlayKnifeAttack();
     }
 
     public override void PerformRangedAttack()
     {
-        Debug.Log("Еки: выстрел из револьвера");
         ShootRevolver();
     }
 
@@ -53,7 +35,6 @@ public class YoukiController : CharacterBase
     {
         if (isHold)
         {
-            Debug.Log("Еки: смена музыки и применение баффов");
             SwitchMusicTrack();
             ApplyAreaBuffToAllPlayers();
         }
@@ -89,7 +70,7 @@ public class YoukiController : CharacterBase
         }
         else
         {
-            Debug.LogWarning("WeaponRaycast не назначен для Еки!");
+            Debug.LogWarning("WeaponRaycast не назначен для Еки");
         }
     }
 
@@ -166,10 +147,10 @@ public class YoukiController : CharacterBase
         MusicBuff current = GetCurrentTrackInfo();
         return current != null ? current.buffName : "No track";
     }
-
+    /*
     void OnDrawGizmosSelected()
     {
         Gizmos.color = new Color(0.3f, 0.5f, 1f, 0.3f);
         Gizmos.DrawSphere(transform.position, 8f);
-    }
+    }*/
 }

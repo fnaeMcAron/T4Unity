@@ -5,6 +5,7 @@ public class RodionController : CharacterBase
 {
     [Header("Настройки Родиона")]
     public StyleManager _styleManager;
+    public WeaponRaycast raycast;
 
     [Header("Множители стиля")]
     public int stylePerHit = 25;
@@ -43,7 +44,6 @@ public class RodionController : CharacterBase
 
     public override void PerformRangedAttack()
     {
-        // TODO: добавить мультипликаторы урона к итоговой реализации
         Debug.Log("Родион: выстрел аннигилятором в дальнем бою");
         ShootAnnihilator();
         _styleManager.AddStylePoints(10);
@@ -53,7 +53,7 @@ public class RodionController : CharacterBase
     {
         if (isHold)
         {
-            Debug.Log("Родион: Таунт");
+            Debug.Log("Родион: таунт");
             Taunt(true);
         }
         else
@@ -75,7 +75,15 @@ public class RodionController : CharacterBase
 
     void ShootAnnihilator()
     {
-        //TO DO: своровать рейкаст из револьвера еки
+        // TODO: добавить мультипликаторы урона к итоговой реализации
+        if (raycast != null)
+        {
+            raycast.Shoot();
+        }
+        else
+        {
+            Debug.LogWarning("WeaponRaycast не назначен для Родиона");
+        }
     }
 
     void Taunt(bool isHold)

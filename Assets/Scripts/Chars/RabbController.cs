@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class RabbController : CharacterBase
 {
-    //[Header("Настройки Крола")]
+    [Header("Настройки Крола")]
+    public WeaponRaycast raycast;
 
     public override void PerformMeleeAttack()
     {
@@ -34,6 +35,13 @@ public class RabbController : CharacterBase
 
     void ShootTompson()
     {
-        //TO DO: своровать рейкаст из револьвера еки
+        if (raycast != null)
+        {
+            raycast.Shoot();
+        }
+        else
+        {
+            Debug.LogWarning("WeaponRaycast не назначен для Еки");
+        }
     }
 }
