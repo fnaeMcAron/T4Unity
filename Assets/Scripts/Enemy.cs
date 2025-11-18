@@ -36,6 +36,11 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    public void DealDamage()
+    {
+
+    }
+
     private void Die()
     {
         Debug.Log("Enemy died");

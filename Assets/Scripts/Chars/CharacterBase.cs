@@ -47,13 +47,9 @@ public abstract class CharacterBase : MonoBehaviour
     private Transform cameraTransform;
 
     private readonly int isMovingHash = Animator.StringToHash("IsMoving");
-    private readonly int isIdleHash = Animator.StringToHash("isIdle");
+    private readonly int isJumpHash = Animator.StringToHash("Jump");
     //private readonly int weaponTypeHash = Animator.StringToHash("WeaponType");
 
-    // Таймер для анимации танца
-    private float idleTimer = 0f;
-    private readonly float danceTriggerTime = 10f; // 10 секунд до танца
-    private bool isIdle = false;
 
     void Awake()
     {
@@ -89,53 +85,16 @@ public abstract class CharacterBase : MonoBehaviour
 
         if (isMoving)
         {
-            if (isIdle)
-            {
-                isIdle = false;
-                animator.SetBool(isIdleHash, false);
-                Debug.Log("Танцы прекращены - персонаж движется");
-            }
-            idleTimer = 0f;
             animator.SetBool(isMovingHash, true);
         }
         else
         {
             animator.SetBool(isMovingHash, false);
-
-            // Если не движемся и не танцуем, увеличиваем таймер
-            if (!isIdle)
-            {
-                idleTimer += Time.deltaTime;
-
-                // Проверяем, прошло ли 10 секунд бездействия
-                if (idleTimer >= danceTriggerTime)
-                {
-                    StartDancing();
-                }
-            }
         }
 
         //Debug.Log($"Движение: {isMoving}, Таймер: {idleTimer:F1}, Танец: {isIdle}");
     }
 
-    private void StartDancing()
-    {
-        isIdle = true;
-        animator.SetBool(isIdleHash, true);
-        Debug.Log("Включаем анимацию танца!");
-    }
-
-    // Метод для принудительного прекращения танца (например, при атаке)
-    public void StopDancing()
-    {
-        if (isIdle)
-        {
-            isIdle = false;
-            idleTimer = 0f;
-            animator.SetBool(isIdleHash, false);
-            Debug.Log("Танец принудительно остановлен");
-        }
-    }
 
     void Update()
     {
@@ -333,6 +292,14 @@ public abstract class CharacterBase : MonoBehaviour
         if (isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+
+            if (animator == null) return;
+
+            animator.SetBool(isJumpHash, true);
+        }
+        else
+        {
+            animator.SetBool(isJumpHash, false);
         }
     }
 
