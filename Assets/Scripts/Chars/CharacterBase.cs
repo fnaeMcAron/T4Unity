@@ -1,25 +1,25 @@
-using UnityEngine;
+п»їusing UnityEngine;
 using UnityEngine.InputSystem;
 
 public abstract class CharacterBase : MonoBehaviour
 {
-    [Header("Информация о персонаже")]
+    [Header("РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РїРµСЂСЃРѕРЅР°Р¶Рµ")]
     public string charname;
 
-    [Header("Компоненты")]
+    [Header("РљРѕРјРїРѕРЅРµРЅС‚С‹")]
     protected Rigidbody rb;
     protected PlayerInput playerInput;
     protected Animator animator;
     [SerializeField] protected CameraFollow cameraFollow;
 
-    [Header("Настройки")]
+    [Header("РќР°СЃС‚СЂРѕР№РєРё")]
     public float moveSpeed = 5f;
     public float rotationSpeed = 10f;
     public float jumpForce = 7f;
 
-    [Header("Боевые настройки")]
+    [Header("Р‘РѕРµРІС‹Рµ РЅР°СЃС‚СЂРѕР№РєРё")]
     public WeaponSlot[] weaponSlots = new WeaponSlot[2];
-    public int currentWeaponIndex = 0; // 0-ближнее, 1-дальнее
+    public int currentWeaponIndex = 0; // 0-Р±Р»РёР¶РЅРµРµ, 1-РґР°Р»СЊРЅРµРµ
 
     [System.Serializable]
     public class WeaponSlot
@@ -34,7 +34,7 @@ public abstract class CharacterBase : MonoBehaviour
     public float meleeRange = 2f;
     public float rangedRange = 10f;
 
-    [Header("Текущие баффы")]
+    [Header("РўРµРєСѓС‰РёРµ Р±Р°С„С„С‹")]
     public MusicBuff activeMusicBuff;
     public float damageMultiplier = 1f;
     public float speedMultiplier = 1f;
@@ -48,13 +48,24 @@ public abstract class CharacterBase : MonoBehaviour
 
     private readonly int isMovingHash = Animator.StringToHash("IsMoving");
     private readonly int isJumpHash = Animator.StringToHash("Jump");
-    //private readonly int weaponTypeHash = Animator.StringToHash("WeaponType");
+    private readonly int firstMeleeAttackTriggerHash = Animator.StringToHash("FirstMeleeAttack");
+    private readonly int secondMeleeAttackTriggerHash = Animator.StringToHash("SecondMeleeAttack");
+    private readonly int rangedAttackHash = Animator.StringToHash("RangedAttack");
+    private readonly int rangedIdleHash = Animator.StringToHash("RangedIdle");
 
+    public GameObject meleeModel;
+    public GameObject rangedModel;
+
+    // РџРµСЂРµРјРµРЅРЅС‹Рµ РґР»СЏ СѓРїСЂР°РІР»РµРЅРёСЏ Р°С‚Р°РєРѕР№
+    private bool canAttack = true;
+    private float lastAttackTime = 0f;
+    private int attackCount = 0;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
         playerInput = GetComponent<PlayerInput>();
+        FindActiveAnimator();
         animator = GetComponent<Animator>();
 
         if (Camera.main != null)
@@ -63,9 +74,17 @@ public abstract class CharacterBase : MonoBehaviour
         InitializeWeapons();
     }
 
+    private void FindActiveAnimator()
+    {
+        animator = GetComponentInChildren<Animator>();
+        if (animator == null)
+        {
+            Debug.LogWarning("Animator not found in character model!");
+        }
+    }
+
     private void InitializeWeapons()
     {
-        // Активируем начальное оружие, деактивируем остальные
         for (int i = 0; i < weaponSlots.Length; i++)
         {
             if (weaponSlots[i].weaponObject != null)
@@ -73,8 +92,6 @@ public abstract class CharacterBase : MonoBehaviour
                 weaponSlots[i].weaponObject.SetActive(i == currentWeaponIndex);
             }
         }
-
-        //UpdateWeaponAnimations();
     }
 
     private void UpdateAnimations()
@@ -92,22 +109,82 @@ public abstract class CharacterBase : MonoBehaviour
             animator.SetBool(isMovingHash, false);
         }
 
-        //Debug.Log($"Движение: {isMoving}, Таймер: {idleTimer:F1}, Танец: {isIdle}");
+        // РђРІС‚РѕРјР°С‚РёС‡РµСЃРєРё РІС‹РєР»СЋС‡Р°РµРј Р°РЅРёРјР°С†РёСЋ РїСЂС‹Р¶РєР° РїСЂРё РїСЂРёР·РµРјР»РµРЅРёРё
+        if (isGrounded && animator.GetBool(isJumpHash))
+        {
+            animator.SetBool(isJumpHash, false);
+        }
     }
-
 
     void Update()
     {
         Move();
         UpdateAnimations();
+
+        // РџСЂРѕРІРµСЂСЏРµРј РєСѓР»РґР°СѓРЅ Р°С‚Р°РєРё
+        if (Time.time - lastAttackTime >= attackInterval)
+        {
+            canAttack = true;
+        }
     }
 
+    public void OnAttack(InputAction.CallbackContext context)
+    {
+        if (context.canceled && canAttack)
+        {
+            if (currentWeaponIndex == 0)
+            {
+                // Р“РµРЅРµСЂРёСЂСѓРµРј СЃР»СѓС‡Р°Р№РЅСѓСЋ Р°С‚Р°РєСѓ РѕС‚ 1 РґРѕ 2
+                int attackIndex = Random.Range(1, 3);
+
+                // Р—Р°РїСѓСЃРєР°РµРј СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰СѓСЋ Р°РЅРёРјР°С†РёСЋ Р°С‚Р°РєРё
+                if (attackIndex == 1)
+                {
+                    animator.SetTrigger(firstMeleeAttackTriggerHash);
+                    Debug.Log("Р—Р°РїСѓС‰РµРЅР° РїРµСЂРІР°СЏ Р°РЅРёРјР°С†РёСЏ Р°С‚Р°РєРё!");
+                }
+                else if (attackIndex == 2)
+                {
+                    animator.SetTrigger(secondMeleeAttackTriggerHash);
+                    Debug.Log("Р—Р°РїСѓС‰РµРЅР° РІС‚РѕСЂР°СЏ Р°РЅРёРјР°С†РёСЏ Р°С‚Р°РєРё!");
+                }
+
+                PerformMeleeAttack(false);
+            }
+            else if (currentWeaponIndex == 1)
+            {
+                if (animator == null)
+                {
+                    Debug.LogError("Animator is null in PlayRangedAnimation!");
+                    return;
+                }
+
+                animator.SetTrigger(rangedAttackHash);
+                PerformRangedAttack(false);
+            }
+
+            // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј РєСѓР»РґР°СѓРЅ
+            canAttack = false;
+            lastAttackTime = Time.time;
+        } else if (context.performed)
+        {
+            if (currentWeaponIndex == 0)
+            {
+                PerformMeleeAttack(true);
+            }
+            else if (currentWeaponIndex == 1)
+            {
+                PerformRangedAttack(true);
+            }
+        }
+    }
+
+    // РћСЃС‚Р°Р»СЊРЅРѕР№ РєРѕРґ Р±РµР· РёР·РјРµРЅРµРЅРёР№
     public void OnSwitchWeapon(InputAction.CallbackContext context)
     {
         if (context.started)
         {
             Vector2 scrollValue = context.ReadValue<Vector2>();
-
             if (scrollValue != Vector2.zero)
             {
                 SwitchWeapon(scrollValue);
@@ -118,15 +195,12 @@ public abstract class CharacterBase : MonoBehaviour
     private void SwitchWeapon(Vector2 direction)
     {
         int newIndex = currentWeaponIndex;
-
-        // Циклическая смена по массиву
         do
         {
             newIndex = (newIndex + (int)direction.y + weaponSlots.Length) % weaponSlots.Length;
         }
         while (!weaponSlots[newIndex].isAvailable && newIndex != currentWeaponIndex);
 
-        // Если нашли доступное оружие
         if (weaponSlots[newIndex].isAvailable && newIndex != currentWeaponIndex)
         {
             SetCurrentWeapon(newIndex);
@@ -146,22 +220,29 @@ public abstract class CharacterBase : MonoBehaviour
             weaponSlots[currentWeaponIndex].weaponObject.SetActive(true);
         }
 
-        //UpdateWeaponAnimations();
-
-        Debug.Log($"Переключено на оружие: {weaponSlots[currentWeaponIndex].slotName}");
+        SwitchCharacterModel();
+        Debug.Log($"РџРµСЂРµРєР»СЋС‡РµРЅРѕ РЅР° РѕСЂСѓР¶РёРµ: {weaponSlots[currentWeaponIndex].slotName}");
     }
 
-    /*
-    private void UpdateWeaponAnimations()
+    private void SwitchCharacterModel()
     {
-        if (animator != null)
-        {
-            // 0 - ближнее оружие, 1 - дальнее оружие
-            animator.SetInteger(weaponTypeHash, currentWeaponIndex);
-        }
-    }*/
+        if (meleeModel == null || rangedModel == null) return;
 
-    // Метод для принудительной установки оружия по индексу
+        bool isMeleeWeapon = currentWeaponIndex == 0;
+        meleeModel.SetActive(isMeleeWeapon);
+        rangedModel.SetActive(!isMeleeWeapon);
+
+        // РћР±РЅРѕРІР»СЏРµРј Р°РЅРёРјР°С‚РѕСЂ РїСЂРё СЃРјРµРЅРµ РјРѕРґРµР»Рё
+        Animator newAnimator = isMeleeWeapon ?
+            meleeModel.GetComponent<Animator>() :
+            rangedModel.GetComponent<Animator>();
+
+        if (newAnimator != null)
+        {
+            animator = newAnimator;
+        }
+    }
+
     public void SetWeaponByIndex(int index)
     {
         if (index >= 0 && index < weaponSlots.Length && weaponSlots[index].isAvailable)
@@ -175,7 +256,6 @@ public abstract class CharacterBase : MonoBehaviour
         if (index >= 0 && index < weaponSlots.Length)
         {
             weaponSlots[index].isAvailable = available;
-
             if (!available && currentWeaponIndex == index)
             {
                 SwitchToFirstAvailableWeapon();
@@ -201,8 +281,7 @@ public abstract class CharacterBase : MonoBehaviour
         damageMultiplier = buff.damageMultiplier;
         speedMultiplier = buff.moveSpeedMultiplier;
         attackSpeedMultiplier = buff.attackSpeedMultiplier;
-
-        Debug.Log($"{name} получил бафф: {buff.buffName}");
+        Debug.Log($"{name} РїРѕР»СѓС‡РёР» Р±Р°С„С„: {buff.buffName}");
     }
 
     public virtual void ResetBuffs()
@@ -230,19 +309,10 @@ public abstract class CharacterBase : MonoBehaviour
         moveInput = context.ReadValue<Vector2>();
     }
 
-    public void OnAttack(InputAction.CallbackContext context)
+    public void OnJump(InputValue value)
     {
-        if (context.performed)
-        {
-            if (currentWeaponIndex == 0)
-            {
-                PerformMeleeAttack();
-            }
-            else if (currentWeaponIndex == 1)
-            {
-                PerformRangedAttack();
-            }
-        }
+        if (value.isPressed)
+            Jump();
     }
 
     public void OnAbility(InputAction.CallbackContext context)
@@ -255,7 +325,6 @@ public abstract class CharacterBase : MonoBehaviour
         {
             UseAbility(false);
         }
-        Debug.Log(context.phase);
     }
 
     private void Move()
@@ -268,7 +337,6 @@ public abstract class CharacterBase : MonoBehaviour
                 return;
         }
 
-        // движение относительно камеры (каким образом я сам не понимаю)
         Vector3 cameraForward = Vector3.Scale(cameraTransform.forward, new Vector3(1, 0, 1));
         Vector3 cameraRight = Vector3.Scale(cameraTransform.right, new Vector3(1, 0, 1));
 
@@ -292,14 +360,10 @@ public abstract class CharacterBase : MonoBehaviour
         if (isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-
-            if (animator == null) return;
-
-            animator.SetBool(isJumpHash, true);
-        }
-        else
-        {
-            animator.SetBool(isJumpHash, false);
+            if (animator != null)
+            {
+                animator.SetBool(isJumpHash, true);
+            }
         }
     }
 
@@ -320,8 +384,10 @@ public abstract class CharacterBase : MonoBehaviour
         isGrounded = false;
     }
 
-    public abstract void PerformMeleeAttack();
-    public abstract void PerformRangedAttack();
+    public abstract void PerformMeleeAttack(bool isHold);
+    public abstract void PerformMeleeChargeAttack();
+    public abstract void PerformRangedAttack(bool isHold);
+    public abstract void PerformRangedAim();
     public abstract void UseAbility(bool isHold);
     public abstract void Dodge();
 }

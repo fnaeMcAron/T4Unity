@@ -13,10 +13,6 @@ public class RodionController : CharacterBase
     public int stylePerDodge = 15;
     public int stylePerCombo = 100;
 
-    private int comboCount = 0;
-    private float lastAttackTime = 0f;
-    private float comboWindow = 2f; // Окно в секундах
-
     //переписать разрешение
     
     public override void OnCharacterSelected()
@@ -35,14 +31,14 @@ public class RodionController : CharacterBase
         //Debug.Log($"{type} отменен, ввод выключен");
     }
 
-    public override void PerformMeleeAttack()
+    public override void PerformMeleeAttack(bool isHold)
     {
         // TODO: добавить мультипликаторы урона к итоговой реализации
         Debug.Log("Родион: атака лобзиком в ближнем бою");
         _styleManager.AddStylePoints(10);
     }
 
-    public override void PerformRangedAttack()
+    public override void PerformRangedAttack(bool isHold)
     {
         Debug.Log("Родион: выстрел аннигилятором в дальнем бою");
         ShootAnnihilator();
@@ -70,6 +66,15 @@ public class RodionController : CharacterBase
         // TO DO: уворот
     }
 
+    public override void PerformMeleeChargeAttack()
+    {
+
+    }
+
+    public override void PerformRangedAim()
+    {
+
+    }
 
 
 

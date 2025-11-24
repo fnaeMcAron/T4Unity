@@ -16,19 +16,35 @@ public class YoukiController : CharacterBase
     private int currentTrackIndex = 0;
     private MusicManager musicManager;
 
+
+
     void Start()
     {
         musicManager = MusicManager.Instance;
     }
 
-    public override void PerformMeleeAttack()
+    public override void PerformMeleeAttack(bool isHold)
     {
-        PlayKnifeAttack();
+        if (isHold)
+        {
+            PlayKnifeAttack();
+        }
+        else
+        {
+            Debug.Log("Заряженная атака");
+        }
     }
 
-    public override void PerformRangedAttack()
+    public override void PerformRangedAttack(bool isHold)
     {
-        ShootRevolver();
+        if (isHold)
+        {
+            ShootRevolver();
+        }
+        else
+        {
+            Debug.Log("Прицеливание");
+        }
     }
 
     public override void UseAbility(bool isHold)
@@ -48,6 +64,16 @@ public class YoukiController : CharacterBase
     public override void Dodge()
     {
         Debug.Log("Еки: уворот");
+    }
+
+    public override void PerformMeleeChargeAttack()
+    {
+
+    }
+
+    public override void PerformRangedAim()
+    {
+
     }
 
     private void PlayKnifeAttack()

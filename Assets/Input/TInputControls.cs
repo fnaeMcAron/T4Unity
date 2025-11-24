@@ -169,7 +169,7 @@ public partial class @TInputControls: IInputActionCollection2, IDisposable
                     ""id"": ""291eaa32-f4bd-45ad-8319-cf5652490985"",
                     ""expectedControlType"": """",
                     ""processors"": """",
-                    ""interactions"": """",
+                    ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
                 },
                 {
