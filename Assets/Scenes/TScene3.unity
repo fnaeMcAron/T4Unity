@@ -1020,7 +1020,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   charname: "\u0424\u043D\u0430\u0439"
-  cameraFollow: {fileID: 0}
+  cameraFollow: {fileID: 1591623089}
   moveSpeed: 10
   rotationSpeed: 10
   jumpForce: 7
@@ -1491,7 +1491,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   charname: "\u0424\u0438\u043D\u0430"
-  cameraFollow: {fileID: 0}
+  cameraFollow: {fileID: 1591623089}
   moveSpeed: 12
   rotationSpeed: 10
   jumpForce: 7
@@ -3472,7 +3472,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   charname: "\u041A\u0440\u043E\u043B"
-  cameraFollow: {fileID: 0}
+  cameraFollow: {fileID: 1591623089}
   moveSpeed: 5
   rotationSpeed: 10
   jumpForce: 7
@@ -3948,7 +3948,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   charname: "\u0420\u043E\u0434\u0438\u043E\u043D"
-  cameraFollow: {fileID: 0}
+  cameraFollow: {fileID: 1591623089}
   moveSpeed: 5
   rotationSpeed: 10
   jumpForce: 7
