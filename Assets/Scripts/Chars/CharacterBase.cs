@@ -400,7 +400,7 @@ public abstract class CharacterBase : MonoBehaviour
 
     public virtual void ResetCamera()
     {
-        // потом
+        cameraFollow.ResetCameraBehindTarget();
     }
 
     void OnCollisionStay(Collision collision)
