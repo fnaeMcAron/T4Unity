@@ -61,7 +61,7 @@ public class YoukiController : CharacterBase
         }
     }
 
-    public override void Dodge()
+    protected override void Dodge()
     {
         Debug.Log("Еки: уворот");
     }

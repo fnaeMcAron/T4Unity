@@ -187,7 +187,7 @@ public partial class @TInputControls: IInputActionCollection2, IDisposable
                     ""id"": ""96810ad5-fa4c-4d8d-872b-33d9aab13c01"",
                     ""expectedControlType"": """",
                     ""processors"": """",
-                    ""interactions"": """",
+                    ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
                 },
                 {
@@ -196,7 +196,7 @@ public partial class @TInputControls: IInputActionCollection2, IDisposable
                     ""id"": ""cb8ab794-a2cb-4833-a3a7-773f22dd64e5"",
                     ""expectedControlType"": """",
                     ""processors"": """",
-                    ""interactions"": ""Tap(duration=1,pressPoint=1.401298E-45)"",
+                    ""interactions"": ""Tap(pressPoint=1.401298E-45)"",
                     ""initialStateCheck"": false
                 },
                 {
@@ -214,7 +214,7 @@ public partial class @TInputControls: IInputActionCollection2, IDisposable
                     ""id"": ""b8ee6a26-6aaa-429b-9156-52c4fbcb9f03"",
                     ""expectedControlType"": """",
                     ""processors"": """",
-                    ""interactions"": """",
+                    ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
                 }
             ],
@@ -541,10 +541,10 @@ public partial class @TInputControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""f8105985-fbe8-42f6-952b-100b14d02406"",
-                    ""path"": """",
+                    ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";Keyboard and Mouse"",
                     ""action"": ""ResetCameraANDToggleTargetLock"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false

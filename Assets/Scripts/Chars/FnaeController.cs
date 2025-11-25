@@ -24,7 +24,7 @@ public class FnaeController : CharacterBase
         IgniteArea();
     }
 
-    public override void Dodge()
+    protected override void Dodge()
     {
         Debug.Log("‘най: уворот на тиранозавре");
     }

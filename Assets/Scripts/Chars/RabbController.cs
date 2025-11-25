@@ -24,7 +24,7 @@ public class RabbController : CharacterBase
         //TO DO: как сделать систему миньонов?
     }
 
-    public override void Dodge()
+    protected override void Dodge()
     {
         Debug.Log("Крол: уворот");
         // TO DO: уворот

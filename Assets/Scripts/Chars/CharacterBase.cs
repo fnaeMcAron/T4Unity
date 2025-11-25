@@ -179,7 +179,33 @@ public abstract class CharacterBase : MonoBehaviour
         }
     }
 
-    // Остальной код без изменений
+    public void OnDodge(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            Dodge();
+        }
+        else if (context.canceled)
+        {
+            // Пока не трогать
+            Dodge();
+            //Riding();
+        }
+    }
+
+
+    public void OnCameraAction(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            ToggleTargetLock();
+        }
+        else if (context.canceled)
+        {
+            ResetCamera();
+        }
+    }
+
     public void OnSwitchWeapon(InputAction.CallbackContext context)
     {
         if (context.started)
@@ -367,6 +393,16 @@ public abstract class CharacterBase : MonoBehaviour
         }
     }
 
+    public virtual void ToggleTargetLock()
+    {
+        // потом
+    }
+
+    public virtual void ResetCamera()
+    {
+        // потом
+    }
+
     void OnCollisionStay(Collision collision)
     {
         if (collision.contacts.Length > 0)
@@ -384,10 +420,12 @@ public abstract class CharacterBase : MonoBehaviour
         isGrounded = false;
     }
 
+    //todo пересмотреть
     public abstract void PerformMeleeAttack(bool isHold);
     public abstract void PerformMeleeChargeAttack();
     public abstract void PerformRangedAttack(bool isHold);
     public abstract void PerformRangedAim();
     public abstract void UseAbility(bool isHold);
-    public abstract void Dodge();
+    protected abstract void Dodge();
+    //public abstract void Riding();
 }

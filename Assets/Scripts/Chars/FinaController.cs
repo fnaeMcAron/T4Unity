@@ -22,7 +22,7 @@ public class FinaControler : CharacterBase
         StunInSphere();
     }
 
-    public override void Dodge()
+    protected override void Dodge()
     {
         Debug.Log("Фина: уворот");
         // TO DO: уворот

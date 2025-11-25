@@ -60,7 +60,7 @@ public class RodionController : CharacterBase
 
     }
 
-    public override void Dodge()
+    protected override void Dodge()
     {
         Debug.Log("Родион: уворот");
         // TO DO: уворот
