@@ -13,6 +13,9 @@ public abstract class CharacterBase : MonoBehaviour
     [SerializeField] protected CameraFollow cameraFollow;
 
     [Header("Настройки")]
+    public bool available = true;
+    public GameObject meleeModel;
+    public GameObject rangedModel;
     public float moveSpeed = 5f;
     public float rotationSpeed = 10f;
     public float jumpForce = 7f;
@@ -20,6 +23,8 @@ public abstract class CharacterBase : MonoBehaviour
     [Header("Боевые настройки")]
     public WeaponSlot[] weaponSlots = new WeaponSlot[2];
     public int currentWeaponIndex = 0; // 0-ближнее, 1-дальнее
+    public float comboTimeWindow = 2f;
+    public int maxComboCount = 5;
 
     [System.Serializable]
     public class WeaponSlot
@@ -45,6 +50,8 @@ public abstract class CharacterBase : MonoBehaviour
     private Vector3 movement;
     private bool isGrounded;
     private Transform cameraTransform;
+    private int unchargedAttackCount = 0;
+    private float lastAttackTime = 0f;
 
     private readonly int isMovingHash = Animator.StringToHash("IsMoving");
     private readonly int isJumpHash = Animator.StringToHash("Jump");
@@ -52,14 +59,6 @@ public abstract class CharacterBase : MonoBehaviour
     private readonly int secondMeleeAttackTriggerHash = Animator.StringToHash("SecondMeleeAttack");
     private readonly int rangedAttackHash = Animator.StringToHash("RangedAttack");
     private readonly int rangedIdleHash = Animator.StringToHash("RangedIdle");
-
-    public GameObject meleeModel;
-    public GameObject rangedModel;
-
-    // Переменные для управления атакой
-    private bool canAttack = true;
-    private float lastAttackTime = 0f;
-    private int attackCount = 0;
 
     void Awake()
     {
@@ -120,18 +119,27 @@ public abstract class CharacterBase : MonoBehaviour
     {
         Move();
         UpdateAnimations();
-
-        // Проверяем кулдаун атаки
-        if (Time.time - lastAttackTime >= attackInterval)
-        {
-            canAttack = true;
-        }
     }
 
     public void OnAttack(InputAction.CallbackContext context)
     {
-        if (context.canceled && canAttack)
+        if (context.performed)
         {
+            if (Time.time - lastAttackTime > comboTimeWindow)
+            {
+                unchargedAttackCount = 0;
+            }
+
+            unchargedAttackCount++;
+            lastAttackTime = Time.time;
+
+            if (unchargedAttackCount > maxComboCount)
+            {
+                unchargedAttackCount = 0;
+            }
+
+            Debug.Log($"Комбо: {unchargedAttackCount} незаряженных атак");
+
             if (currentWeaponIndex == 0)
             {
                 // Генерируем случайную атаку от 1 до 2
@@ -149,7 +157,7 @@ public abstract class CharacterBase : MonoBehaviour
                     Debug.Log("Запущена вторая анимация атаки!");
                 }
 
-                PerformMeleeAttack(false);
+                PerformMeleeAttack();
             }
             else if (currentWeaponIndex == 1)
             {
@@ -160,21 +168,19 @@ public abstract class CharacterBase : MonoBehaviour
                 }
 
                 animator.SetTrigger(rangedAttackHash);
-                PerformRangedAttack(false);
+                PerformRangedAttack();
             }
 
-            // Устанавливаем кулдаун
-            canAttack = false;
             lastAttackTime = Time.time;
-        } else if (context.performed)
+        } else if (context.canceled)
         {
             if (currentWeaponIndex == 0)
             {
-                PerformMeleeAttack(true);
+                PerformMeleeChargeAttack();
             }
             else if (currentWeaponIndex == 1)
             {
-                PerformRangedAttack(true);
+                PerformMeleeChargeAttack();
             }
         }
     }
@@ -318,6 +324,26 @@ public abstract class CharacterBase : MonoBehaviour
         attackSpeedMultiplier = 1f;
     }
 
+    public int GetCurrentComboCount()
+    {
+        if (Time.time - lastAttackTime > comboTimeWindow)
+        {
+            unchargedAttackCount = 0;
+        }
+        return unchargedAttackCount;
+    }
+
+    public void ResetCombo()
+    {
+        unchargedAttackCount = 0;
+        Debug.Log("Комбо сброшен");
+    }
+
+    public bool IsComboActive()
+    {
+        return unchargedAttackCount > 0 && (Time.time - lastAttackTime) <= comboTimeWindow;
+    }
+
     public virtual void OnCharacterSelected()
     {
         if (playerInput != null)
@@ -420,10 +446,9 @@ public abstract class CharacterBase : MonoBehaviour
         isGrounded = false;
     }
 
-    //todo пересмотреть
-    public abstract void PerformMeleeAttack(bool isHold);
+    public abstract void PerformMeleeAttack();
     public abstract void PerformMeleeChargeAttack();
-    public abstract void PerformRangedAttack(bool isHold);
+    public abstract void PerformRangedAttack();
     public abstract void PerformRangedAim();
     public abstract void UseAbility(bool isHold);
     protected abstract void Dodge();

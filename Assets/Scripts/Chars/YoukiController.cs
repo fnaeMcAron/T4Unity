@@ -4,14 +4,13 @@ using UnityEngine;
 
 public class YoukiController : CharacterBase
 {
-    [Header("Музыкальные баффы Еки")]
-    public MusicBuff[] availableTracks;
-
     [Header("Настройки Еки")]
     public WeaponRaycast raycast;
     public TMP_Text songText;
     public GameObject defaultBuffEffect;
     public CharacterBase[] allCharacters;
+
+    public MusicBuff[] availableTracks;
 
     private int currentTrackIndex = 0;
     private MusicManager musicManager;
@@ -23,28 +22,14 @@ public class YoukiController : CharacterBase
         musicManager = MusicManager.Instance;
     }
 
-    public override void PerformMeleeAttack(bool isHold)
+    public override void PerformMeleeAttack()
     {
-        if (isHold)
-        {
-            PlayKnifeAttack();
-        }
-        else
-        {
-            Debug.Log("Заряженная атака");
-        }
+        PlayKnifeAttack();
     }
 
-    public override void PerformRangedAttack(bool isHold)
+    public override void PerformRangedAttack()
     {
-        if (isHold)
-        {
-            ShootRevolver();
-        }
-        else
-        {
-            Debug.Log("Прицеливание");
-        }
+        ShootRevolver();
     }
 
     public override void UseAbility(bool isHold)
@@ -68,12 +53,12 @@ public class YoukiController : CharacterBase
 
     public override void PerformMeleeChargeAttack()
     {
-
+        Debug.Log("Заряженная атака");
     }
 
     public override void PerformRangedAim()
     {
-
+        Debug.Log("Прицеливание");
     }
 
     private void PlayKnifeAttack()

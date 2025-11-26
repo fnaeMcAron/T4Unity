@@ -6,13 +6,13 @@ public class FnaeController : CharacterBase
     public float burnDamage = 10f;
     public GameObject fireEffect;
 
-    public override void PerformMeleeAttack(bool isHold)
+    public override void PerformMeleeAttack()
     {
         Debug.Log($"‘най: атака {damageMultiplier}");
         CreateBurnEffect();
     }
 
-    public override void PerformRangedAttack(bool isHold)
+    public override void PerformRangedAttack()
     {
         Debug.Log($"‘най: атака {damageMultiplier}");
         ShootFireProjectile();

@@ -5,13 +5,13 @@ public class RabbController : CharacterBase
     [Header("Настройки Крола")]
     public WeaponRaycast raycast;
 
-    public override void PerformMeleeAttack(bool isHold)
+    public override void PerformMeleeAttack()
     {
         // TODO: добавить мультипликаторы урона к итоговой реализации
         Debug.Log("Крол: атака тростью в ближнем бою");
     }
 
-    public override void PerformRangedAttack(bool isHold)
+    public override void PerformRangedAttack()
     {
         // TODO: добавить мультипликаторы урона к итоговой реализации
         Debug.Log("Крол: выстрелы томпсоном в дальнем бою");

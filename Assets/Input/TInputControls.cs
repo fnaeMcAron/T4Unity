@@ -216,6 +216,15 @@ public partial class @TInputControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""54ec791d-5d02-472c-9684-24ed0dab000e"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -519,7 +528,7 @@ public partial class @TInputControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""07a9e60d-9509-434e-a755-7ec30c7d7343"",
-                    ""path"": ""<Keyboard>/e"",
+                    ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard and Mouse"",
@@ -680,6 +689,28 @@ public partial class @TInputControls: IInputActionCollection2, IDisposable
                     ""action"": ""SwitchWeapon"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""38305f8f-9cd2-4541-9292-88f3257dd251"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a28cd026-c232-4601-9988-be4b12bfc050"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard and Mouse"",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -948,6 +979,7 @@ public partial class @TInputControls: IInputActionCollection2, IDisposable
         m_Player_Ability = m_Player.FindAction("Ability", throwIfNotFound: true);
         m_Player_SwitchWeapon = m_Player.FindAction("SwitchWeapon", throwIfNotFound: true);
         m_Player_ResetCameraANDToggleTargetLock = m_Player.FindAction("ResetCameraANDToggleTargetLock", throwIfNotFound: true);
+        m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1055,6 +1087,7 @@ public partial class @TInputControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Ability;
     private readonly InputAction m_Player_SwitchWeapon;
     private readonly InputAction m_Player_ResetCameraANDToggleTargetLock;
+    private readonly InputAction m_Player_Interact;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1123,6 +1156,10 @@ public partial class @TInputControls: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @ResetCameraANDToggleTargetLock => m_Wrapper.m_Player_ResetCameraANDToggleTargetLock;
         /// <summary>
+        /// Provides access to the underlying input action "Player/Interact".
+        /// </summary>
+        public InputAction @Interact => m_Wrapper.m_Player_Interact;
+        /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
         public InputActionMap Get() { return m_Wrapper.m_Player; }
@@ -1190,6 +1227,9 @@ public partial class @TInputControls: IInputActionCollection2, IDisposable
             @ResetCameraANDToggleTargetLock.started += instance.OnResetCameraANDToggleTargetLock;
             @ResetCameraANDToggleTargetLock.performed += instance.OnResetCameraANDToggleTargetLock;
             @ResetCameraANDToggleTargetLock.canceled += instance.OnResetCameraANDToggleTargetLock;
+            @Interact.started += instance.OnInteract;
+            @Interact.performed += instance.OnInteract;
+            @Interact.canceled += instance.OnInteract;
         }
 
         /// <summary>
@@ -1243,6 +1283,9 @@ public partial class @TInputControls: IInputActionCollection2, IDisposable
             @ResetCameraANDToggleTargetLock.started -= instance.OnResetCameraANDToggleTargetLock;
             @ResetCameraANDToggleTargetLock.performed -= instance.OnResetCameraANDToggleTargetLock;
             @ResetCameraANDToggleTargetLock.canceled -= instance.OnResetCameraANDToggleTargetLock;
+            @Interact.started -= instance.OnInteract;
+            @Interact.performed -= instance.OnInteract;
+            @Interact.canceled -= instance.OnInteract;
         }
 
         /// <summary>
@@ -1602,6 +1645,13 @@ public partial class @TInputControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnResetCameraANDToggleTargetLock(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Interact" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnInteract(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

@@ -4,13 +4,13 @@ public class FinaControler : CharacterBase
 {
     //[Header("Настройки Фины")]
 
-    public override void PerformMeleeAttack(bool isHold)
+    public override void PerformMeleeAttack()
     {
         // TODO: добавить мультипликаторы урона к итоговой реализации
         Debug.Log("Фина: атака палкой в ближнем бою");
     }
 
-    public override void PerformRangedAttack(bool isHold)
+    public override void PerformRangedAttack()
     {
         Debug.Log("Фина: атака копьем в дальнем бою");
         ShootSpearProjectile();

@@ -31,14 +31,14 @@ public class RodionController : CharacterBase
         //Debug.Log($"{type} отменен, ввод выключен");
     }
 
-    public override void PerformMeleeAttack(bool isHold)
+    public override void PerformMeleeAttack()
     {
         // TODO: добавить мультипликаторы урона к итоговой реализации
         Debug.Log("Родион: атака лобзиком в ближнем бою");
         _styleManager.AddStylePoints(10);
     }
 
-    public override void PerformRangedAttack(bool isHold)
+    public override void PerformRangedAttack()
     {
         Debug.Log("Родион: выстрел аннигилятором в дальнем бою");
         ShootAnnihilator();

@@ -21,7 +21,7 @@ public class StyleManager : MonoBehaviour
     public List<StyleLevel> styleLevels = new List<StyleLevel>();
     public int currentStylePoints = 0;
     public StyleLevel currentStyleLevel { get; private set; }
-    public float styleDecayRate = 1f; // Потеря очков стиля в секунду
+    public float styleDecayRate = 100f; // Потеря очков стиля в секунду
     public float styleDecayDelay = 3f; // Задержка перед началом распада
 
     [Header("Визуальные эффекты")]
@@ -52,11 +52,11 @@ public class StyleManager : MonoBehaviour
         {
             styleLevels = new List<StyleLevel>
             {
-                new StyleLevel { levelName = "D", pointsRequired = 0, damageMultiplier = 1.0f, styleColor = Color.gray },
-                new StyleLevel { levelName = "C", pointsRequired = 100, damageMultiplier = 1.2f, styleColor = Color.blue },
-                new StyleLevel { levelName = "B", pointsRequired = 200, damageMultiplier = 1.4f, styleColor = Color.green },
-                new StyleLevel { levelName = "A", pointsRequired = 300, damageMultiplier = 1.7f, styleColor = Color.yellow },
-                new StyleLevel { levelName = "S", pointsRequired = 500, damageMultiplier = 2.0f, styleColor = Color.red }
+                new StyleLevel { levelName = "1080p", pointsRequired = 50, damageMultiplier = 1.1f, styleColor = Color.gray },
+                new StyleLevel { levelName = "4K", pointsRequired = 100, damageMultiplier = 1.2f, styleColor = Color.blue },
+                new StyleLevel { levelName = "8K", pointsRequired = 200, damageMultiplier = 1.4f, styleColor = Color.green },
+                new StyleLevel { levelName = "64K", pointsRequired = 300, damageMultiplier = 1.7f, styleColor = Color.yellow },
+                new StyleLevel { levelName = "666K", pointsRequired = 600, damageMultiplier = 2.0f, styleColor = Color.red }
             };
         }
 
