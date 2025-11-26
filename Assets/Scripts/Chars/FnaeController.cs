@@ -9,12 +9,14 @@ public class FnaeController : CharacterBase
     public override void PerformMeleeAttack()
     {
         Debug.Log($"‘най: атака {damageMultiplier}");
-        CreateBurnEffect();
+        StartCoroutine(EnablingCollider(1f, 0));
+        //CreateBurnEffect();
     }
 
     public override void PerformRangedAttack()
     {
         Debug.Log($"‘най: атака {damageMultiplier}");
+        weaponSlots[1].weaponObject.GetComponent<Collider>().enabled = true;
         ShootFireProjectile();
     }
 
@@ -31,16 +33,13 @@ public class FnaeController : CharacterBase
 
     public override void PerformMeleeChargeAttack()
     {
-
+        weaponSlots[0].weaponObject.GetComponent<Collider>().enabled = true;
     }
 
     public override void PerformRangedAim()
     {
 
     }
-
-
-
 
     private void CreateBurnEffect()
     {

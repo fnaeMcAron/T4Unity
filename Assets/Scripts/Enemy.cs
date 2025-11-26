@@ -25,6 +25,14 @@ public class Enemy : MonoBehaviour
         agent.autoBraking = true;
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Weapon"))
+        {
+            TakeDamage(100f);
+        }
+    }
+
     public void TakeDamage(float damage)
     {
         health -= damage;

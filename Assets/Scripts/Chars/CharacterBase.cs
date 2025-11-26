@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 public abstract class CharacterBase : MonoBehaviour
 {
@@ -31,6 +32,7 @@ public abstract class CharacterBase : MonoBehaviour
     {
         public string slotName;
         public GameObject weaponObject;
+        public SkinnedMeshRenderer skinnedMesh;
         public bool isAvailable = true;
     }
 
@@ -119,6 +121,10 @@ public abstract class CharacterBase : MonoBehaviour
     {
         Move();
         UpdateAnimations();
+        if (weaponSlots[0].skinnedMesh != null)
+        {
+            weaponSlots[0].weaponObject.transform.position = weaponSlots[0].skinnedMesh.bounds.center;
+        }
     }
 
     public void OnAttack(InputAction.CallbackContext context)
@@ -193,9 +199,9 @@ public abstract class CharacterBase : MonoBehaviour
         }
         else if (context.canceled)
         {
-            // Пока не трогать
-            Dodge();
+            // todo
             //Riding();
+            Dodge();
         }
     }
 
@@ -421,7 +427,7 @@ public abstract class CharacterBase : MonoBehaviour
 
     public virtual void ToggleTargetLock()
     {
-        // потом
+        // todo
     }
 
     public virtual void ResetCamera()
@@ -444,6 +450,14 @@ public abstract class CharacterBase : MonoBehaviour
     void OnCollisionExit(Collision collision)
     {
         isGrounded = false;
+    }
+
+    //todo сделать привязку секунд к длительности анимаций
+    protected IEnumerator EnablingCollider(float seconds, int weaponIndex)
+    {
+        weaponSlots[weaponIndex].weaponObject.GetComponent<Collider>().enabled = true;
+        yield return new WaitForSeconds(seconds);
+        weaponSlots[weaponIndex].weaponObject.GetComponent<Collider>().enabled = false;
     }
 
     public abstract void PerformMeleeAttack();
