@@ -1,6 +1,8 @@
 using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEngine.UI;
 
 [System.Serializable]
 public class StyleLevel
@@ -11,6 +13,7 @@ public class StyleLevel
     public float moveSpeedBonus = 0f;
     public Color styleColor = Color.white;
     public GameObject visualEffect;
+    public Sprite styleImage;
 }
 
 public class StyleManager : MonoBehaviour
@@ -27,7 +30,8 @@ public class StyleManager : MonoBehaviour
     [Header("Визуальные эффекты")]
     public ParticleSystem styleParticles;
     public Light styleLight;
-    public TMP_Text text;
+    public TMP_Text pointsText;
+    public Image image;
 
     private float timeSinceLastAction = 0f;
     private bool isDecayActive = false;
@@ -52,11 +56,12 @@ public class StyleManager : MonoBehaviour
         {
             styleLevels = new List<StyleLevel>
             {
-                new StyleLevel { levelName = "1080p", pointsRequired = 50, damageMultiplier = 1.1f, styleColor = Color.gray },
-                new StyleLevel { levelName = "4K", pointsRequired = 100, damageMultiplier = 1.2f, styleColor = Color.blue },
-                new StyleLevel { levelName = "8K", pointsRequired = 200, damageMultiplier = 1.4f, styleColor = Color.green },
-                new StyleLevel { levelName = "64K", pointsRequired = 300, damageMultiplier = 1.7f, styleColor = Color.yellow },
-                new StyleLevel { levelName = "666K", pointsRequired = 600, damageMultiplier = 2.0f, styleColor = Color.red }
+                
+                new StyleLevel { levelName = "D", pointsRequired = 50, damageMultiplier = 1.1f, styleColor = Color.gray },
+                new StyleLevel { levelName = "C", pointsRequired = 100, damageMultiplier = 1.2f, styleColor = Color.blue },
+                new StyleLevel { levelName = "B", pointsRequired = 200, damageMultiplier = 1.4f, styleColor = Color.green },
+                new StyleLevel { levelName = "A", pointsRequired = 300, damageMultiplier = 1.7f, styleColor = Color.yellow },
+                new StyleLevel { levelName = "S", pointsRequired = 600, damageMultiplier = 2.0f, styleColor = Color.red }
             };
         }
 
@@ -76,6 +81,7 @@ public class StyleManager : MonoBehaviour
                 UpdateStyleLevel();
             }
         }
+        pointsText.text = currentStylePoints.ToString();
     }
 
     public void AddStylePoints(int points, string actionName = "")
@@ -134,6 +140,12 @@ public class StyleManager : MonoBehaviour
         {
             styleLight.color = currentStyleLevel.styleColor;
         }
+
+        if (currentStyleLevel.styleImage != null)
+        {
+            image.sprite = currentStyleLevel.styleImage;
+        }
+
         Debug.Log(currentStyleLevel.levelName);
         // TO DO: звуковые эффекты, UI оповещения
     }
@@ -143,11 +155,8 @@ public class StyleManager : MonoBehaviour
         // Визуальная обратная связь при получении очков стиля
         GameObject effect = GameObject.CreatePrimitive(PrimitiveType.Quad);
         effect.transform.position = transform.position + Vector3.up * 2f;
-        effect.GetComponent<Renderer>().material.color = currentStyleLevel.styleColor;
+        //effect.GetComponent<Renderer>().material.color = currentStyleLevel.styleColor;
 
-        // Текст с очками
-        // TO DO: использовать TextMesh Pro для лучшего отображения
-        text.text = currentStyleLevel.levelName;
         Destroy(effect, 2f);
     }
 
