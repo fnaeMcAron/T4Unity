@@ -26,20 +26,18 @@ public abstract class CharacterBase : MonoBehaviour
     public int currentWeaponIndex = 0; // 0-ближнее, 1-дальнее
     public float comboTimeWindow = 2f;
     public int maxComboCount = 5;
+    //public float attackInterval = 0.5f;
 
     [System.Serializable]
     public class WeaponSlot
     {
         public string slotName;
-        public GameObject weaponObject;
-        public SkinnedMeshRenderer skinnedMesh;
+        public GameObject[] weaponObject = new GameObject[2];
+        public SkinnedMeshRenderer[] skinnedMesh = new SkinnedMeshRenderer[2];
+        public float baseDamage = 10f;
+        public float range = 2f;
         public bool isAvailable = true;
     }
-
-    public float baseDamage = 10f;
-    public float attackInterval = 0.5f;
-    public float meleeRange = 2f;
-    public float rangedRange = 10f;
 
     [Header("Текущие баффы")]
     public MusicBuff activeMusicBuff;
@@ -90,7 +88,13 @@ public abstract class CharacterBase : MonoBehaviour
         {
             if (weaponSlots[i].weaponObject != null)
             {
-                weaponSlots[i].weaponObject.SetActive(i == currentWeaponIndex);
+                for (int j = 0; j < weaponSlots[i].weaponObject.Length; j++)
+                {
+                    if (weaponSlots[i].weaponObject[j] != null)
+                    {
+                        weaponSlots[i].weaponObject[j].SetActive(i == currentWeaponIndex);
+                    }
+                }
             }
         }
     }
@@ -121,9 +125,19 @@ public abstract class CharacterBase : MonoBehaviour
     {
         Move();
         UpdateAnimations();
-        if (weaponSlots[0].skinnedMesh != null)
+
+        if (weaponSlots[currentWeaponIndex].skinnedMesh != null)
         {
-            weaponSlots[0].weaponObject.transform.position = weaponSlots[0].skinnedMesh.bounds.center;
+            for (int i = 0; i < weaponSlots[currentWeaponIndex].weaponObject.Length; i++)
+            {
+                if (weaponSlots[currentWeaponIndex].weaponObject[i] != null &&
+                    i < weaponSlots[currentWeaponIndex].skinnedMesh.Length &&
+                    weaponSlots[currentWeaponIndex].skinnedMesh[i] != null)
+                {
+                    weaponSlots[currentWeaponIndex].weaponObject[i].transform.position =
+                        weaponSlots[currentWeaponIndex].skinnedMesh[i].bounds.center;
+                }
+            }
         }
     }
 
@@ -247,15 +261,30 @@ public abstract class CharacterBase : MonoBehaviour
 
     private void SetCurrentWeapon(int newIndex)
     {
+        // Выключаем все объекты текущего оружия
         if (weaponSlots[currentWeaponIndex].weaponObject != null)
         {
-            weaponSlots[currentWeaponIndex].weaponObject.SetActive(false);
+            for (int i = 0; i < weaponSlots[currentWeaponIndex].weaponObject.Length; i++)
+            {
+                if (weaponSlots[currentWeaponIndex].weaponObject[i] != null)
+                {
+                    weaponSlots[currentWeaponIndex].weaponObject[i].SetActive(false);
+                }
+            }
         }
 
         currentWeaponIndex = newIndex;
+
+        // Включаем все объекты нового оружия
         if (weaponSlots[currentWeaponIndex].weaponObject != null)
         {
-            weaponSlots[currentWeaponIndex].weaponObject.SetActive(true);
+            for (int i = 0; i < weaponSlots[currentWeaponIndex].weaponObject.Length; i++)
+            {
+                if (weaponSlots[currentWeaponIndex].weaponObject[i] != null)
+                {
+                    weaponSlots[currentWeaponIndex].weaponObject[i].SetActive(true);
+                }
+            }
         }
 
         SwitchCharacterModel();
@@ -453,11 +482,20 @@ public abstract class CharacterBase : MonoBehaviour
     }
 
     //todo сделать привязку секунд к длительности анимаций
-    protected IEnumerator EnablingCollider(float seconds, int weaponIndex)
+    protected IEnumerator EnablingCollider(float seconds, int weaponIndex, int colliderIndex = 0)
     {
-        weaponSlots[weaponIndex].weaponObject.GetComponent<Collider>().enabled = true;
-        yield return new WaitForSeconds(seconds);
-        weaponSlots[weaponIndex].weaponObject.GetComponent<Collider>().enabled = false;
+        if (weaponSlots[weaponIndex].weaponObject != null &&
+            colliderIndex < weaponSlots[weaponIndex].weaponObject.Length &&
+            weaponSlots[weaponIndex].weaponObject[colliderIndex] != null)
+        {
+            Collider collider = weaponSlots[weaponIndex].weaponObject[colliderIndex].GetComponent<Collider>();
+            if (collider != null)
+            {
+                collider.enabled = true;
+                yield return new WaitForSeconds(seconds);
+                collider.enabled = false;
+            }
+        }
     }
 
     public abstract void PerformMeleeAttack();

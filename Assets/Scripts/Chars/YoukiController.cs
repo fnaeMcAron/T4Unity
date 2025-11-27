@@ -24,7 +24,8 @@ public class YoukiController : CharacterBase
 
     public override void PerformMeleeAttack()
     {
-        StartCoroutine(EnablingCollider(2f, 0));
+        StartCoroutine(EnablingCollider(2f, 0, 0));
+        StartCoroutine(EnablingCollider(2f, 0, 1));
         //PlayKnifeAttack();
     }
 

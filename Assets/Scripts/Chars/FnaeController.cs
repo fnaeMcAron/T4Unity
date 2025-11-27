@@ -6,6 +6,8 @@ public class FnaeController : CharacterBase
     public float burnDamage = 10f;
     public GameObject fireEffect;
 
+    Enemy enemy;
+
     public override void PerformMeleeAttack()
     {
         Debug.Log($"‘най: атака {damageMultiplier}");
@@ -16,7 +18,6 @@ public class FnaeController : CharacterBase
     public override void PerformRangedAttack()
     {
         Debug.Log($"‘най: атака {damageMultiplier}");
-        weaponSlots[1].weaponObject.GetComponent<Collider>().enabled = true;
         ShootFireProjectile();
     }
 
@@ -33,7 +34,7 @@ public class FnaeController : CharacterBase
 
     public override void PerformMeleeChargeAttack()
     {
-        weaponSlots[0].weaponObject.GetComponent<Collider>().enabled = true;
+
     }
 
     public override void PerformRangedAim()
@@ -67,7 +68,9 @@ public class FnaeController : CharacterBase
         {
             if (hitCollider.CompareTag("Enemy"))
             {
-                // TO DO: нанести урон горением
+                enemy = hitCollider.GetComponent<Enemy>();
+                enemy.TakeDamage(25f);
+                StartCoroutine(enemy.Stun(10));
             }
         }
     }
