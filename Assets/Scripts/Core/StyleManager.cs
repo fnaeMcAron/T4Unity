@@ -1,8 +1,8 @@
-using UnityEngine;
-using TMPro;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.GraphicsBuffer;
 
 [System.Serializable]
 public class StyleLevel
@@ -14,27 +14,43 @@ public class StyleLevel
     public Color styleColor = Color.white;
     public GameObject visualEffect;
     public Sprite styleImage;
+    public float resourceCostModifier = 1f;
 }
 
 public class StyleManager : MonoBehaviour
 {
     public static StyleManager Instance { get; private set; }
 
-    [Header("Настройки стиля")]
-    public List<StyleLevel> styleLevels = new List<StyleLevel>();
+    public enum StyleMode { Rodion, Fina, None }
+
+    [Header("Настройки стиля Родиона (положительные значения)")]
+    public List<StyleLevel> rodionStyleLevels = new List<StyleLevel>();
+
+    [Header("Настройки стиля Фины (отрицательные значения)")]
+    public List<StyleLevel> finaStyleLevels = new List<StyleLevel>();
+
+    [Header("Общие настройки")]
+    public StyleMode currentStyleMode = StyleMode.None;
     public int currentStylePoints = 0;
-    public StyleLevel currentStyleLevel { get; private set; }
-    public float styleDecayRate = 100f; // Потеря очков стиля в секунду
-    public float styleDecayDelay = 3f; // Задержка перед началом распада
+    public float styleDecayRate = 100f;
+    public float styleDecayDelay = 3f;
+
+    [Header("UI элементы")]
+    public TMP_Text stylePointsText;
+    public Image rodionStyleImage;
+    public Image finaStyleImage;
+    public GameObject styleUI;
 
     [Header("Визуальные эффекты")]
     public ParticleSystem styleParticles;
     public Light styleLight;
-    public TMP_Text pointsText;
-    public Image image;
 
-    private float timeSinceLastAction = 0f;
-    private bool isDecayActive = false;
+    StyleLevel currentRodionLevel;
+    StyleLevel currentFinaLevel;
+    float timeSinceLastAction = 0f;
+    float elapsed = 0f;
+    bool isDecayActive = false;
+    bool isInitialized = false;
 
     void Awake()
     {
@@ -52,129 +68,367 @@ public class StyleManager : MonoBehaviour
 
     void InitializeStyleSystem()
     {
-        if (styleLevels.Count == 0)
+        if (isInitialized) return;
+
+        // уровни Родиона (от 0 до int)
+        if (rodionStyleLevels.Count == 0)
         {
-            styleLevels = new List<StyleLevel>
+            rodionStyleLevels = new List<StyleLevel>
             {
-                
-                new StyleLevel { levelName = "D", pointsRequired = 50, damageMultiplier = 1.1f, styleColor = Color.gray },
-                new StyleLevel { levelName = "C", pointsRequired = 100, damageMultiplier = 1.2f, styleColor = Color.blue },
-                new StyleLevel { levelName = "B", pointsRequired = 200, damageMultiplier = 1.4f, styleColor = Color.green },
-                new StyleLevel { levelName = "A", pointsRequired = 300, damageMultiplier = 1.7f, styleColor = Color.yellow },
-                new StyleLevel { levelName = "S", pointsRequired = 600, damageMultiplier = 2.0f, styleColor = Color.red }
+                new StyleLevel {
+                    levelName = "1080p",
+                    pointsRequired = 50,
+                    styleColor = Color.white,
+                    resourceCostModifier = 1.0f
+                },
+                new StyleLevel {
+                    levelName = "4K",
+                    pointsRequired = 100,
+                    styleColor = Color.cyan,
+                    resourceCostModifier = 0.95f
+                },
+                new StyleLevel {
+                    levelName = "16K",
+                    pointsRequired = 200,
+                    styleColor = Color.green,
+                    resourceCostModifier = 0.9f
+                },
+                new StyleLevel {
+                    levelName = "64K",
+                    pointsRequired = 400,
+                    styleColor = Color.yellow,
+                    resourceCostModifier = 0.8f
+                },
+                new StyleLevel {
+                    levelName = "666K",
+                    pointsRequired = 800,
+                    styleColor = Color.red,
+                    resourceCostModifier = 0.5f
+                }
             };
         }
 
-        UpdateStyleLevel();
+        // уровни Фины (от -int до 0)
+        if (finaStyleLevels.Count == 0)
+        {
+            finaStyleLevels = new List<StyleLevel>
+            {
+                new StyleLevel {
+                    levelName = "Pathetic...",
+                    pointsRequired = -50,
+                    damageMultiplier = 1.1f,
+                    styleColor = Color.gray,
+                },
+                new StyleLevel {
+                    levelName = "Is that all?",
+                    pointsRequired = -100,
+                    damageMultiplier = 1.2f,
+                    styleColor = Color.blue,
+                },
+                new StyleLevel {
+                    levelName = "Try harder.",
+                    pointsRequired = -200,
+                    damageMultiplier = 1.4f,
+                    styleColor = Color.green,
+                },
+                new StyleLevel {
+                    levelName = "Good boy~",
+                    pointsRequired = -400,
+                    damageMultiplier = 1.7f,
+                    styleColor = Color.magenta,
+                },
+                new StyleLevel {
+                    levelName = "Yes, my master~",
+                    pointsRequired = -800,
+                    damageMultiplier = 2f,
+                    styleColor = Color.red,
+                }
+            };
+        }
+
+        UpdateStyleLevels();
+        isInitialized = true;
     }
 
     void Update()
     {
-        if (isDecayActive && currentStylePoints > 0)
-        {
-            timeSinceLastAction += Time.deltaTime;
+        if (!isDecayActive) return;
 
-            if (timeSinceLastAction >= styleDecayDelay)
+        timeSinceLastAction += Time.deltaTime;
+
+        if (timeSinceLastAction >= styleDecayDelay)
+        {
+            switch (currentStyleMode)
             {
-                // Постепенная потеря очков стиля
-                currentStylePoints = Mathf.Max(0, currentStylePoints - (int)(styleDecayRate * Time.deltaTime) * 10);
-                UpdateStyleLevel();
+                case StyleMode.Rodion:
+                    if (currentStylePoints > 0)
+                    {
+                        currentStylePoints = Mathf.Max(0, currentStylePoints - (int)(styleDecayRate * Time.deltaTime));
+                        UpdateRodionStyleLevel();
+                    }
+                    break;
+
+                case StyleMode.Fina:
+                    if (currentStylePoints < 0)
+                    {
+                        currentStylePoints = Mathf.Min(0, currentStylePoints + (int)(styleDecayRate * Time.deltaTime));
+                        UpdateFinaStyleLevel();
+                    }
+                    break;
             }
+            UpdateUI();
         }
-        pointsText.text = currentStylePoints.ToString();
     }
 
     public void AddStylePoints(int points, string actionName = "")
     {
-        currentStylePoints += points;
+        switch (currentStyleMode)
+        {
+            case StyleMode.Rodion:
+                currentStylePoints = currentStylePoints + points;
+                UpdateRodionStyleLevel();
+                break;
+
+            case StyleMode.Fina:
+                currentStylePoints = currentStylePoints - points;
+                UpdateFinaStyleLevel();
+                break;
+
+            case StyleMode.None:
+                return;
+        }
+
         timeSinceLastAction = 0f;
         isDecayActive = true;
 
-        StyleLevel newLevel = UpdateStyleLevel();
-
         if (!string.IsNullOrEmpty(actionName))
         {
-            Debug.Log($"Стиль +{points} за '{actionName}'. Уровень: {newLevel.levelName}");
+            Debug.Log($"{currentStyleMode}: {points} за '{actionName}'");
         }
-
-        // Визуальная обратная связь
-        PlayStyleGainEffect(points);
+        UpdateUI();
     }
 
-    private StyleLevel UpdateStyleLevel()
+    public void SwitchToRodionStyle()
     {
-        StyleLevel newLevel = styleLevels[0];
+        if (currentStyleMode == StyleMode.Rodion) return;
 
-        // Находим текущий уровень стиля
-        for (int i = styleLevels.Count - 1; i >= 0; i--)
+        currentStyleMode = StyleMode.Rodion;
+
+        if (styleUI != null) styleUI.SetActive(true);
+
+        UpdateRodionStyleLevel();
+        UpdateUI();
+    }
+
+    public void SwitchToFinaStyle()
+    {
+        if (currentStyleMode == StyleMode.Fina) return;
+
+        ResetCurrentMode();
+        currentStyleMode = StyleMode.Fina;
+
+        if (styleUI != null) styleUI.SetActive(true);
+
+        UpdateFinaStyleLevel();
+        UpdateUI();
+    }
+
+    private void ResetCurrentMode()
+    {
+        currentStylePoints = 0;
+
+        switch (currentStyleMode)
         {
-            if (currentStylePoints >= styleLevels[i].pointsRequired)
+            case StyleMode.Rodion:
+                UpdateRodionStyleLevel();
+                break;
+
+            case StyleMode.Fina:
+                UpdateFinaStyleLevel();
+                break;
+        }
+    }
+
+    private void UpdateRodionStyleLevel()
+    {
+        StyleLevel newLevel = rodionStyleLevels[0];
+
+        for (int i = rodionStyleLevels.Count - 1; i >= 0; i--)
+        {
+            if (currentStylePoints >= rodionStyleLevels[i].pointsRequired)
             {
-                newLevel = styleLevels[i];
+                newLevel = rodionStyleLevels[i];
                 break;
             }
         }
 
-        // Если уровень изменился
-        if (currentStyleLevel != newLevel)
+        if (currentRodionLevel != newLevel)
         {
-            currentStyleLevel = newLevel;
+            currentRodionLevel = newLevel;
             OnStyleLevelChanged();
         }
+    }
 
-        return newLevel;
+    private void UpdateFinaStyleLevel()
+    {
+        StyleLevel newLevel = finaStyleLevels[0];
+
+        for (int i = finaStyleLevels.Count - 1; i >= 0; i--)
+        {
+            if (currentStylePoints <= finaStyleLevels[i].pointsRequired)
+            {
+                newLevel = finaStyleLevels[i];
+                break;
+            }
+        }
+
+        if (currentFinaLevel != newLevel)
+        {
+            currentFinaLevel = newLevel;
+            OnStyleLevelChanged();
+        }
+    }
+
+    private void UpdateStyleLevels()
+    {
+        UpdateRodionStyleLevel();
+        UpdateFinaStyleLevel();
     }
 
     private void OnStyleLevelChanged()
     {
-        Debug.Log($"Уровень стиля изменен на: {currentStyleLevel.levelName}");
 
-        // Визуальные эффекты смены уровня
+        // todo визуальные эффекты здесь потом добавить и нармальна
         if (styleParticles != null)
         {
             var main = styleParticles.main;
-            main.startColor = currentStyleLevel.styleColor;
+            main.startColor = GetCurrentStyleColor();
         }
 
         if (styleLight != null)
         {
-            styleLight.color = currentStyleLevel.styleColor;
+            styleLight.color = GetCurrentStyleColor();
         }
 
-        if (currentStyleLevel.styleImage != null)
-        {
-            image.sprite = currentStyleLevel.styleImage;
-        }
-
-        Debug.Log(currentStyleLevel.levelName);
-        // TO DO: звуковые эффекты, UI оповещения
+        UpdateUI();
     }
 
-    private void PlayStyleGainEffect(int points)
+    private void UpdateUI()
     {
-        // Визуальная обратная связь при получении очков стиля
-        GameObject effect = GameObject.CreatePrimitive(PrimitiveType.Quad);
-        effect.transform.position = transform.position + Vector3.up * 2f;
-        //effect.GetComponent<Renderer>().material.color = currentStyleLevel.styleColor;
+        if (stylePointsText != null)
+        {
+            switch (currentStyleMode)
+            {
+                case StyleMode.Rodion:
+                    rodionStyleImage.enabled = true;
+                    finaStyleImage.enabled = false;
+                    stylePointsText.text = $"{currentStylePoints}";
+                    break;
 
-        Destroy(effect, 2f);
+                case StyleMode.Fina:
+                    rodionStyleImage.enabled = false;
+                    finaStyleImage.enabled = true;
+                    stylePointsText.text = $"{Mathf.Abs(currentStylePoints)}";
+                    break;
+
+                case StyleMode.None:
+                    //stylePointsText.gameObject.SetActive(false);
+                    stylePointsText.text = "потом уберу";
+                    stylePointsText.color = Color.gray;
+                    break;
+            }
+        }
+
+        if (rodionStyleImage != null)
+        {
+            switch (currentStyleMode)
+            {
+                case StyleMode.Rodion:
+                    if (currentRodionLevel?.styleImage != null)
+                    {
+                        rodionStyleImage.sprite = currentRodionLevel.styleImage; //todo плавное изменение координат по X от 200 до -100 (на 300) через цикл и deltatime
+                    }
+                    break;
+
+                case StyleMode.Fina:
+                    if (currentFinaLevel?.styleImage != null)
+                    {
+                        finaStyleImage.sprite = currentFinaLevel.styleImage; //todo плавное изменение координат по Y от 850 до 250 (на 600) через цикл и deltatime
+                    }
+                    break;
+            }
+        }
     }
 
-    public void ResetStyle()
+    public void ResetAllStyles()
     {
         currentStylePoints = 0;
+        currentStyleMode = StyleMode.None;
         timeSinceLastAction = 0f;
         isDecayActive = false;
-        UpdateStyleLevel();
+
+        if (styleUI != null) styleUI.SetActive(false);
+
+        UpdateStyleLevels();
+        UpdateUI();
     }
 
-    public float GetDamageMultiplier()
+    // геттеры для других систем
+    public float GetCurrentDamageMultiplier()
     {
-        return currentStyleLevel?.damageMultiplier ?? 1f;
+        return currentStyleMode switch
+        {
+            StyleMode.Rodion => currentRodionLevel?.damageMultiplier ?? 1f,
+            StyleMode.Fina => currentFinaLevel?.damageMultiplier ?? 1f,
+            _ => 1f
+        };
     }
 
-    public float GetMoveSpeedBonus()
+    public float GetCurrentResourceCostModifier()
     {
-        return currentStyleLevel?.moveSpeedBonus ?? 0f;
+        return currentStyleMode switch
+        {
+            StyleMode.Rodion => currentRodionLevel?.resourceCostModifier ?? 1f,
+            StyleMode.Fina => currentFinaLevel?.resourceCostModifier ?? 1f,
+            _ => 1f
+        };
+    }
+
+    public string GetCurrentStyleLevelName()
+    {
+        return currentStyleMode switch
+        {
+            StyleMode.Rodion => currentRodionLevel?.levelName ?? "None",
+            StyleMode.Fina => currentFinaLevel?.levelName ?? "None",
+            _ => "None"
+        };
+    }
+
+    public Color GetCurrentStyleColor()
+    {
+        return currentStyleMode switch
+        {
+            StyleMode.Rodion => currentRodionLevel?.styleColor ?? Color.white,
+            StyleMode.Fina => currentFinaLevel?.styleColor ?? Color.white,
+            _ => Color.gray
+        };
+    }
+
+    public bool IsStyleActive()
+    {
+        return currentStyleMode != StyleMode.None;
+    }
+
+    public StyleLevel CurrentStyleLevel
+    {
+        get
+        {
+            return currentStyleMode switch
+            {
+                StyleMode.Rodion => currentRodionLevel,
+                StyleMode.Fina => currentFinaLevel,
+                _ => null
+            };
+        }
     }
 }

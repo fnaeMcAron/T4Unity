@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using TMPro;
-using UnityEditor.UIElements;
+//using UnityEditor.UIElements;
 
 public class WeaponRaycast : MonoBehaviour
 {
@@ -13,7 +13,7 @@ public class WeaponRaycast : MonoBehaviour
     public SkinnedMeshRenderer skinnedMesh;
     public LineRenderer tracerEffect; // Ёффект следа пули
     public GameObject impactEffect; // Ёффект удара пули
-    public TagField enemyLayerMask;
+    //public TagField enemyLayerMask;
 
     // ’арактеристики оружи€
     public float weaponRange = 50f; // ƒальность оружи€

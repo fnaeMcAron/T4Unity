@@ -1,14 +1,14 @@
-using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
 
 public class CharacterManager : MonoBehaviour
 {
-    [Header("Общие настройки персонажей")]
+    [Header("Общие настройки")]
     public WormManager wormManager;
     public CharacterBase[] characters;
     public TMP_Text text;
     public CameraFollow cameraFollow;
+    public StyleManager styleManager;
 
     [Header("Текущий персонаж")]
     [SerializeField] private CharacterBase currentCharacter;
@@ -16,8 +16,9 @@ public class CharacterManager : MonoBehaviour
 
     public CharacterBase CurrentCharacter => currentCharacter;
     public int CurrentCharacterIndex => currentCharacterIndex;
+
     public delegate void DeathAction();
-    public static event DeathAction OnDeath; // Событие при смерти игрока
+    public static event DeathAction OnDeath;
 
     void Start()
     {
@@ -30,38 +31,51 @@ public class CharacterManager : MonoBehaviour
 
     private void LateUpdate()
     {
-        text.text = "ЧЕРВЯЧКИИИИ: " + wormManager.GetWorms();
+        text.text = "ЧЕРВЯЧКИИИ: " + wormManager.GetWorms();
         if (wormManager.GetWorms() <= 0f)
         {
-            Die(); // Вызываем метод при смерти игрока
+            Die();
         }
     }
+
     void Die()
     {
-        if (OnDeath != null)
-        {
-            OnDeath(); // Вызываем событие при смерти игрока
-        }
-
-        Destroy(this.gameObject); // Уничтожаем игрока
+        OnDeath?.Invoke();
+        Destroy(this.gameObject);
     }
 
     public void SwitchToCharacter(int index)
     {
-        Vector3 prevPos = new Vector3();
-        Quaternion prevRot = new Quaternion();
         if (index < 0 || index >= characters.Length) return;
 
-        currentCharacter.OnCharacterDeselected();
-        currentCharacter.gameObject.SetActive(false);
-        currentCharacter.transform.GetLocalPositionAndRotation(out prevPos, out prevRot);
+        Vector3 prevPos = currentCharacter.transform.localPosition;
+        Quaternion prevRot = currentCharacter.transform.localRotation;
+
+        if (currentCharacter != null)
+        {
+            currentCharacter.OnCharacterDeselected();
+            currentCharacter.gameObject.SetActive(false);
+        }
 
         currentCharacterIndex = index;
         currentCharacter = characters[index];
-        currentCharacter.OnCharacterSelected();
-        currentCharacter.transform.SetLocalPositionAndRotation(prevPos, prevRot);
+
+        if (currentCharacter is RodionController)
+        {
+            styleManager?.SwitchToRodionStyle();
+        }
+        else if (currentCharacter is FinaController)
+        {
+            styleManager?.SwitchToFinaStyle();
+        }
+
+        currentCharacter.transform.localPosition = prevPos;
+        currentCharacter.transform.localRotation = prevRot;
         currentCharacter.gameObject.SetActive(true);
-        cameraFollow.SetTarget(currentCharacter.transform);
-        Debug.Log($"Переключено на: {currentCharacter.name}");
+        currentCharacter.OnCharacterSelected();
+
+        cameraFollow?.SetTarget(currentCharacter.transform);
+
+        //Debug.Log($"Переключено на: {currentCharacter.name}");
     }
 }

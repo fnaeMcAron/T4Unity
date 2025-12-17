@@ -1,25 +1,76 @@
+// FinaController.cs
 using UnityEngine;
 
-public class FinaControler : CharacterBase
+public class FinaController : CharacterBase
 {
-    //[Header("Настройки Фины")]
+    [Header("Настройки Фины")]
+    public StyleManager styleManager;
+
+    [Header("Особые настройки")]
+    public float lowHealthDamageBonus = 2.0f; // Множитель урона при низком HP
+    public float humiliationThreshold = 0.3f; // Порог HP для "Good boy~" (30%)
+
+    public override void OnCharacterSelected()
+    {
+        base.OnCharacterSelected();
+        if (styleManager != null)
+        {
+            styleManager.SwitchToFinaStyle();
+        }
+    }
 
     public override void PerformMeleeAttack()
     {
-        // TODO: добавить мультипликаторы урона к итоговой реализации
-        Debug.Log("Фина: атака палкой в ближнем бою");
+        Debug.Log("Фина: атака палкой");
+        // Получаем урон с учетом модификаторов стиля
+        float baseDamage = weaponSlots[currentWeaponIndex].baseDamage;
+        float styleMultiplier = styleManager?.GetCurrentDamageMultiplier() ?? 1f;
+
+        // Дополнительный бонус при низком HP
+        float healthPercent = GetHealthPercent();
+        if (healthPercent < humiliationThreshold)
+        {
+            styleMultiplier *= lowHealthDamageBonus;
+        }
+
+        float finalDamage = baseDamage * styleMultiplier;
+        Debug.Log($"Урон Фины: {finalDamage} (множитель: {styleMultiplier})");
+
+        if (styleManager != null && styleManager.IsStyleActive())
+        {
+            // Для Фины плохая игра добавляет очки
+            styleManager.AddStylePoints(10, "Атака");
+        }
     }
 
     public override void PerformRangedAttack()
     {
-        Debug.Log("Фина: атака копьем в дальнем бою");
+        Debug.Log("Фина: атака копьем");
         ShootSpearProjectile();
+
+        if (styleManager != null && styleManager.IsStyleActive())
+        {
+            styleManager.AddStylePoints(15, "Метание копья");
+        }
     }
 
     public override void UseAbility(bool isHold)
     {
         Debug.Log("Фина: стан");
         StunInSphere();
+
+        if (styleManager != null && styleManager.IsStyleActive())
+        {
+            // Стоимость способности зависит от уровня стиля
+            float costModifier = styleManager.GetCurrentResourceCostModifier();
+            // TO DO: применить к стоимости червей
+        }
+    }
+
+    private float GetHealthPercent()
+    {
+        // TO DO: получить процент HP из WormManager
+        return 1.0f;
     }
 
     protected override void Dodge()

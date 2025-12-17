@@ -43,7 +43,7 @@ public class Enemy : MonoBehaviour
         if (other.CompareTag("Weapon"))
         {
             _char = _charman.CurrentCharacter.GetComponent<CharacterBase>();
-            incomingDamage = _char.weaponSlots[_char.currentWeaponIndex].baseDamage * _char.damageMultiplier * _styleman.currentStyleLevel.damageMultiplier;
+            incomingDamage = _char.weaponSlots[_char.currentWeaponIndex].baseDamage * _char.damageMultiplier * _styleman.GetCurrentDamageMultiplier();
             TakeDamage(incomingDamage);
             //todo вылетающие цифры?
         }

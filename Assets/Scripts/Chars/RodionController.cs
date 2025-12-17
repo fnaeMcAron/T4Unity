@@ -1,48 +1,80 @@
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class RodionController : CharacterBase
 {
     [Header("Настройки Родиона")]
-    public StyleManager _styleManager;
+    public StyleManager styleManager;
     public WeaponRaycast raycast;
 
     [Header("Множители стиля")]
-    public int stylePerHit = 25;
-    public int stylePerKill = 50;
-    public int stylePerDodge = 15;
-    public int stylePerCombo = 100;
+    public int stylePerHit = 20;
+    public int stylePerKill = 40;
+    public int stylePerDodge = 10;
+    public int stylePerCombo = 30;
 
-    //переписать разрешение
-    
+    [Header("Эффекты разрешения")]
+    public RenderTexture[] resolutionRenderTextures; // 1080p, 4K, 16K, 64K, 666K
+
     public override void OnCharacterSelected()
     {
-        if (playerInput != null)
-            playerInput.enabled = true;
-        //Screen.SetResolution(640, 360, true);
-        //Debug.Log($"{type} выбран, ввод включен");
+        base.OnCharacterSelected();
+        if (styleManager != null)
+        {
+            styleManager.SwitchToRodionStyle();
+        }
+        // Начальное разрешение
+        UpdateResolutionEffect("1080p");
     }
 
     public override void OnCharacterDeselected()
     {
-        if (playerInput != null)
-            playerInput.enabled = false;
-        //Screen.SetResolution(Screen.width, Screen.height, true);
-        //Debug.Log($"{type} отменен, ввод выключен");
+        base.OnCharacterDeselected();
+        // ResetResolution();
     }
 
     public override void PerformMeleeAttack()
     {
-        // TODO: добавить мультипликаторы урона к итоговой реализации
-        Debug.Log("Родион: атака лобзиком в ближнем бою");
-        _styleManager.AddStylePoints(10);
+        Debug.Log("Родион: атака лобзиком");
+        if (styleManager != null && styleManager.IsStyleActive())
+        {
+            styleManager.AddStylePoints(stylePerHit, "Атака лобзиком");
+        }
     }
 
     public override void PerformRangedAttack()
     {
-        Debug.Log("Родион: выстрел аннигилятором в дальнем бою");
+        Debug.Log("Родион: выстрел аннигилятором");
         ShootAnnihilator();
-        _styleManager.AddStylePoints(10);
+        if (styleManager != null && styleManager.IsStyleActive())
+        {
+            styleManager.AddStylePoints(stylePerHit, "Выстрел аннигилятором");
+        }
+    }
+
+    private void UpdateResolutionEffect(string levelName)
+    {
+        // TO DO: реализовать эффекты изменения разрешения
+        switch (levelName)
+        {
+            case "1080p":
+                // Screen.SetResolution(1920, 1080, false);
+                break;
+            case "4K":
+
+                break;
+            case "16K":
+
+                break;
+            case "64K":
+
+                break;
+            case "666K":
+
+                break;
+        }
     }
 
     public override void UseAbility(bool isHold)
@@ -76,11 +108,8 @@ public class RodionController : CharacterBase
 
     }
 
-
-
     void ShootAnnihilator()
     {
-        // TODO: добавить мультипликаторы урона к итоговой реализации
         if (raycast != null)
         {
             raycast.Shoot();
