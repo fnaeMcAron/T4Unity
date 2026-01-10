@@ -1,3 +1,4 @@
+п»їusing ERP.Discord;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -23,27 +24,31 @@ public class StyleManager : MonoBehaviour
 
     public enum StyleMode { Rodion, Fina, None }
 
-    [Header("Настройки стиля Родиона (положительные значения)")]
+    [Header("РќР°СЃС‚СЂРѕР№РєРё СЃС‚РёР»СЏ Р РѕРґРёРѕРЅР° (РїРѕР»РѕР¶РёС‚РµР»СЊРЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ)")]
     public List<StyleLevel> rodionStyleLevels = new List<StyleLevel>();
 
-    [Header("Настройки стиля Фины (отрицательные значения)")]
+    [Header("РќР°СЃС‚СЂРѕР№РєРё СЃС‚РёР»СЏ Р¤РёРЅС‹ (РѕС‚СЂРёС†Р°С‚РµР»СЊРЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ)")]
     public List<StyleLevel> finaStyleLevels = new List<StyleLevel>();
 
-    [Header("Общие настройки")]
+    [Header("РћР±С‰РёРµ РЅР°СЃС‚СЂРѕР№РєРё")]
     public StyleMode currentStyleMode = StyleMode.None;
     public int currentStylePoints = 0;
     public float styleDecayRate = 100f;
     public float styleDecayDelay = 3f;
 
-    [Header("UI элементы")]
+    [Header("UI СЌР»РµРјРµРЅС‚С‹")]
     public TMP_Text stylePointsText;
     public Image rodionStyleImage;
     public Image finaStyleImage;
     public GameObject styleUI;
 
-    [Header("Визуальные эффекты")]
+    [Header("Р’РёР·СѓР°Р»СЊРЅС‹Рµ СЌС„С„РµРєС‚С‹")]
     public ParticleSystem styleParticles;
     public Light styleLight;
+    public Camera cam;
+    public RenderTexture[] resolutionRenderTextures;
+    public RawImage resolutionTexture;
+    public GameObject bandicam;
 
     StyleLevel currentRodionLevel;
     StyleLevel currentFinaLevel;
@@ -70,7 +75,7 @@ public class StyleManager : MonoBehaviour
     {
         if (isInitialized) return;
 
-        // уровни Родиона (от 0 до int)
+        // СѓСЂРѕРІРЅРё Р РѕРґРёРѕРЅР° (РѕС‚ 0 РґРѕ int)
         if (rodionStyleLevels.Count == 0)
         {
             rodionStyleLevels = new List<StyleLevel>
@@ -108,7 +113,7 @@ public class StyleManager : MonoBehaviour
             };
         }
 
-        // уровни Фины (от -int до 0)
+        // СѓСЂРѕРІРЅРё Р¤РёРЅС‹ (РѕС‚ -int РґРѕ 0)
         if (finaStyleLevels.Count == 0)
         {
             finaStyleLevels = new List<StyleLevel>
@@ -178,6 +183,7 @@ public class StyleManager : MonoBehaviour
             }
             UpdateUI();
         }
+        UpdateResolutionEffect();
     }
 
     public void AddStylePoints(int points, string actionName = "")
@@ -203,7 +209,7 @@ public class StyleManager : MonoBehaviour
 
         if (!string.IsNullOrEmpty(actionName))
         {
-            Debug.Log($"{currentStyleMode}: {points} за '{actionName}'");
+            Debug.Log($"{currentStyleMode}: {points} Р·Р° '{actionName}'");
         }
         UpdateUI();
     }
@@ -269,6 +275,43 @@ public class StyleManager : MonoBehaviour
         }
     }
 
+    private void UpdateResolutionEffect()
+    {
+        switch (CurrentStyleLevel.levelName)
+        {
+            case "1080p":
+                //СЃС‚Р°РЅРґР°СЂС‚РЅРѕРµ 1920x1080
+                cam.targetTexture = resolutionRenderTextures[0];
+                resolutionTexture.texture = resolutionRenderTextures[0];
+                bandicam.SetActive(false);
+                break;
+            case "4K":
+                cam.targetTexture = resolutionRenderTextures[1];
+                resolutionTexture.texture = resolutionRenderTextures[1];
+                bandicam.SetActive(false);
+                break;
+            case "8K":
+                cam.targetTexture = resolutionRenderTextures[2];
+                resolutionTexture.texture = resolutionRenderTextures[2];
+                bandicam.SetActive(false);
+                break;
+            case "64K":
+                cam.targetTexture = resolutionRenderTextures[3];
+                resolutionTexture.texture = resolutionRenderTextures[3];
+                break;
+            case "666K":
+                cam.targetTexture = resolutionRenderTextures[4];
+                resolutionTexture.texture = resolutionRenderTextures[4];
+                bandicam.SetActive(true);
+                break;
+            default:
+                cam.targetTexture = resolutionRenderTextures[0];
+                resolutionTexture.texture = resolutionRenderTextures[0];
+                bandicam.SetActive(false);
+                break;
+        }
+    }
+
     private void UpdateFinaStyleLevel()
     {
         StyleLevel newLevel = finaStyleLevels[0];
@@ -297,8 +340,7 @@ public class StyleManager : MonoBehaviour
 
     private void OnStyleLevelChanged()
     {
-
-        // todo визуальные эффекты здесь потом добавить и нармальна
+        // todo РІРёР·СѓР°Р»СЊРЅС‹Рµ СЌС„С„РµРєС‚С‹ Р·РґРµСЃСЊ РїРѕС‚РѕРј РґРѕР±Р°РІРёС‚СЊ Рё РЅР°СЂРјР°Р»СЊРЅР°
         if (styleParticles != null)
         {
             var main = styleParticles.main;
@@ -332,8 +374,9 @@ public class StyleManager : MonoBehaviour
                     break;
 
                 case StyleMode.None:
-                    //stylePointsText.gameObject.SetActive(false);
-                    stylePointsText.text = "потом уберу";
+                    rodionStyleImage.enabled = false;
+                    finaStyleImage.enabled = true;
+                    stylePointsText.text = "РїРѕС‚РѕРј СѓР±РµСЂСѓ";
                     stylePointsText.color = Color.gray;
                     break;
             }
@@ -346,14 +389,14 @@ public class StyleManager : MonoBehaviour
                 case StyleMode.Rodion:
                     if (currentRodionLevel?.styleImage != null)
                     {
-                        rodionStyleImage.sprite = currentRodionLevel.styleImage; //todo плавное изменение координат по X от 200 до -100 (на 300) через цикл и deltatime
+                        rodionStyleImage.sprite = currentRodionLevel.styleImage; //todo РїР»Р°РІРЅРѕРµ РёР·РјРµРЅРµРЅРёРµ РєРѕРѕСЂРґРёРЅР°С‚ РїРѕ X РѕС‚ 200 РґРѕ -100 (РЅР° 300) С‡РµСЂРµР· С†РёРєР» Рё deltatime
                     }
                     break;
 
                 case StyleMode.Fina:
                     if (currentFinaLevel?.styleImage != null)
                     {
-                        finaStyleImage.sprite = currentFinaLevel.styleImage; //todo плавное изменение координат по Y от 850 до 250 (на 600) через цикл и deltatime
+                        finaStyleImage.sprite = currentFinaLevel.styleImage; //todo РїР»Р°РІРЅРѕРµ РёР·РјРµРЅРµРЅРёРµ РєРѕРѕСЂРґРёРЅР°С‚ РїРѕ Y РѕС‚ 850 РґРѕ 250 (РЅР° 600) С‡РµСЂРµР· С†РёРєР» Рё deltatime
                     }
                     break;
             }
@@ -373,7 +416,7 @@ public class StyleManager : MonoBehaviour
         UpdateUI();
     }
 
-    // геттеры для других систем
+    // РіРµС‚С‚РµСЂС‹ РґР»СЏ РґСЂСѓРіРёС… СЃРёСЃС‚РµРј
     public float GetCurrentDamageMultiplier()
     {
         return currentStyleMode switch

@@ -1,14 +1,11 @@
-// FinaController.cs
 using UnityEngine;
 
 public class FinaController : CharacterBase
 {
-    [Header("Настройки Фины")]
-    public StyleManager styleManager;
 
     [Header("Особые настройки")]
-    public float lowHealthDamageBonus = 2.0f; // Множитель урона при низком HP
-    public float humiliationThreshold = 0.3f; // Порог HP для "Good boy~" (30%)
+    public float lowHealthDamageBonus = 2.0f;
+    public float humiliationThreshold = 0.3f;
 
     public override void OnCharacterSelected()
     {
@@ -47,11 +44,6 @@ public class FinaController : CharacterBase
     {
         Debug.Log("Фина: атака копьем");
         ShootSpearProjectile();
-
-        if (styleManager != null && styleManager.IsStyleActive())
-        {
-            styleManager.AddStylePoints(15, "Метание копья");
-        }
     }
 
     public override void UseAbility(bool isHold)
@@ -73,7 +65,7 @@ public class FinaController : CharacterBase
         return 1.0f;
     }
 
-    protected override void Dodge()
+    public override void Dodge()
     {
         Debug.Log("Фина: уворот");
         // TO DO: уворот
@@ -99,7 +91,10 @@ public class FinaController : CharacterBase
         projectile.GetComponent<Renderer>().material.color = Color.red;
         // TO DO: добавить Rigidbody и логику полета
 
-
+        if (styleManager != null && styleManager.IsStyleActive())
+        {
+            styleManager.AddStylePoints(15, "Метание копья");
+        }
 
         /*
         GameObject bullet = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -119,6 +114,16 @@ public class FinaController : CharacterBase
 
     void StunInSphere()
     {
-
+        // TODO: добавить мультипликаторы урона к итоговой реализации
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, 5f);
+        foreach (var hitCollider in hitColliders)
+        {
+            if (hitCollider.CompareTag("Enemy"))
+            {
+                enemy = hitCollider.GetComponent<Enemy>();
+                enemy.TakeDamage(25f);
+                StartCoroutine(enemy.Stun(10));
+            }
+        }
     }
 }

@@ -12,8 +12,9 @@ GameObject:
   - component: {fileID: 2692070234291426011}
   - component: {fileID: 8769834485375062568}
   - component: {fileID: 3703334944923332159}
-  - component: {fileID: 4050253405238669375}
   - component: {fileID: 6484535834632219690}
+  - component: {fileID: -1691134795181586284}
+  - component: {fileID: 778994645986165326}
   m_Layer: 0
   m_Name: molotov
   m_TagString: Untagged
@@ -30,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 1562264791244172891}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 25.680616, y: -10.543634, z: 16.952408}
+  m_LocalPosition: {x: 82.069824, y: -7.5, z: 47.26069}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -107,23 +108,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4050253405238669375
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1562264791244172891}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: edfe661acf230394c9a99a50585dce9e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  explosionParticles: {fileID: 0}
-  fireAreaParticles: {fileID: 0}
-  meshObject: {fileID: 1562264791244172891}
-  fireLight: {fileID: 0}
-  explosionSound: {fileID: 0}
 --- !u!54 &6484535834632219690
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -151,3 +135,40 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &-1691134795181586284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1562264791244172891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46451bdb45d127c4a8c9fc377f3635a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damagePerSecond: 10
+  burnDuration: 3
+  fireRadius: 5
+  fireEffectPrefab: {fileID: 0}
+--- !u!135 &778994645986165326
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1562264791244172891}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 5
+  m_Center: {x: 0, y: 0, z: 0}

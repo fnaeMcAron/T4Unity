@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using Unity.VisualScripting;
+using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections;
 
 public abstract class CharacterBase : MonoBehaviour
 {
@@ -10,8 +11,10 @@ public abstract class CharacterBase : MonoBehaviour
     [Header("Компоненты")]
     protected Rigidbody rb;
     protected PlayerInput playerInput;
-    protected Animator animator;
+    public Animator animator;
+    [SerializeField] protected StyleManager styleManager;
     [SerializeField] protected CameraFollow cameraFollow;
+    [SerializeField] protected CharacterManager charMan;
 
     [Header("Настройки")]
     public bool available = true;
@@ -27,6 +30,7 @@ public abstract class CharacterBase : MonoBehaviour
     public float comboTimeWindow = 2f;
     public int maxComboCount = 5;
     //public float attackInterval = 0.5f;
+    public float abilityDuration = 1f;
 
     [System.Serializable]
     public class WeaponSlot
@@ -45,41 +49,27 @@ public abstract class CharacterBase : MonoBehaviour
     public float speedMultiplier = 1f;
     public float attackSpeedMultiplier = 1f;
 
-    protected Vector2 moveInput;
+    public Vector2 moveInput;
     protected Vector2 lookInput;
-    private Vector3 movement;
-    private bool isGrounded;
-    private Transform cameraTransform;
-    private int unchargedAttackCount = 0;
-    private float lastAttackTime = 0f;
+    protected Enemy enemy;
+    Vector3 movement;
+    public bool isGrounded;
+    Transform cameraTransform;
 
-    private readonly int isMovingHash = Animator.StringToHash("IsMoving");
-    private readonly int isJumpHash = Animator.StringToHash("Jump");
-    private readonly int firstMeleeAttackTriggerHash = Animator.StringToHash("FirstMeleeAttack");
-    private readonly int secondMeleeAttackTriggerHash = Animator.StringToHash("SecondMeleeAttack");
-    private readonly int rangedAttackHash = Animator.StringToHash("RangedAttack");
-    private readonly int rangedIdleHash = Animator.StringToHash("RangedIdle");
+    readonly int isMovingHash = Animator.StringToHash("IsMoving");
+    readonly int isJumpHash = Animator.StringToHash("Jump");
+    public readonly int firstMeleeAttackTriggerHash = Animator.StringToHash("FirstMeleeAttack");
+    public readonly int secondMeleeAttackTriggerHash = Animator.StringToHash("SecondMeleeAttack");
+    public readonly int rangedAttackHash = Animator.StringToHash("RangedAttack");
+    readonly int rangedIdleHash = Animator.StringToHash("RangedIdle");
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        playerInput = GetComponent<PlayerInput>();
-        FindActiveAnimator();
-        animator = GetComponent<Animator>();
-
         if (Camera.main != null)
             cameraTransform = Camera.main.transform;
 
         InitializeWeapons();
-    }
-
-    private void FindActiveAnimator()
-    {
-        animator = GetComponentInChildren<Animator>();
-        if (animator == null)
-        {
-            Debug.LogWarning("Animator not found in character model!");
-        }
     }
 
     private void InitializeWeapons()
@@ -141,110 +131,7 @@ public abstract class CharacterBase : MonoBehaviour
         }
     }
 
-    public void OnAttack(InputAction.CallbackContext context)
-    {
-        if (context.performed)
-        {
-            if (Time.time - lastAttackTime > comboTimeWindow)
-            {
-                unchargedAttackCount = 0;
-            }
-
-            unchargedAttackCount++;
-            lastAttackTime = Time.time;
-
-            if (unchargedAttackCount > maxComboCount)
-            {
-                unchargedAttackCount = 0;
-            }
-
-            Debug.Log($"Комбо: {unchargedAttackCount} незаряженных атак");
-
-            if (currentWeaponIndex == 0)
-            {
-                // Генерируем случайную атаку от 1 до 2
-                int attackIndex = Random.Range(1, 3);
-
-                // Запускаем соответствующую анимацию атаки
-                if (attackIndex == 1)
-                {
-                    animator.SetTrigger(firstMeleeAttackTriggerHash);
-                    Debug.Log("Запущена первая анимация атаки!");
-                }
-                else if (attackIndex == 2)
-                {
-                    animator.SetTrigger(secondMeleeAttackTriggerHash);
-                    Debug.Log("Запущена вторая анимация атаки!");
-                }
-
-                PerformMeleeAttack();
-            }
-            else if (currentWeaponIndex == 1)
-            {
-                if (animator == null)
-                {
-                    Debug.LogError("Animator is null in PlayRangedAnimation!");
-                    return;
-                }
-
-                animator.SetTrigger(rangedAttackHash);
-                PerformRangedAttack();
-            }
-
-            lastAttackTime = Time.time;
-        } else if (context.canceled)
-        {
-            if (currentWeaponIndex == 0)
-            {
-                PerformMeleeChargeAttack();
-            }
-            else if (currentWeaponIndex == 1)
-            {
-                PerformMeleeChargeAttack();
-            }
-        }
-    }
-
-    public void OnDodge(InputAction.CallbackContext context)
-    {
-        if (context.performed)
-        {
-            Dodge();
-        }
-        else if (context.canceled)
-        {
-            // todo
-            //Riding();
-            Dodge();
-        }
-    }
-
-
-    public void OnCameraAction(InputAction.CallbackContext context)
-    {
-        if (context.performed)
-        {
-            ToggleTargetLock();
-        }
-        else if (context.canceled)
-        {
-            ResetCamera();
-        }
-    }
-
-    public void OnSwitchWeapon(InputAction.CallbackContext context)
-    {
-        if (context.started)
-        {
-            Vector2 scrollValue = context.ReadValue<Vector2>();
-            if (scrollValue != Vector2.zero)
-            {
-                SwitchWeapon(scrollValue);
-            }
-        }
-    }
-
-    private void SwitchWeapon(Vector2 direction)
+    public void SwitchWeapon(Vector2 direction)
     {
         int newIndex = currentWeaponIndex;
         do
@@ -359,30 +246,11 @@ public abstract class CharacterBase : MonoBehaviour
         attackSpeedMultiplier = 1f;
     }
 
-    public int GetCurrentComboCount()
-    {
-        if (Time.time - lastAttackTime > comboTimeWindow)
-        {
-            unchargedAttackCount = 0;
-        }
-        return unchargedAttackCount;
-    }
-
-    public void ResetCombo()
-    {
-        unchargedAttackCount = 0;
-        Debug.Log("Комбо сброшен");
-    }
-
-    public bool IsComboActive()
-    {
-        return unchargedAttackCount > 0 && (Time.time - lastAttackTime) <= comboTimeWindow;
-    }
-
     public virtual void OnCharacterSelected()
     {
         if (playerInput != null)
             playerInput.enabled = true;
+        Move();
     }
 
     public virtual void OnCharacterDeselected()
@@ -391,30 +259,8 @@ public abstract class CharacterBase : MonoBehaviour
             playerInput.enabled = false;
     }
 
-    public void OnMove(InputAction.CallbackContext context)
-    {
-        moveInput = context.ReadValue<Vector2>();
-    }
 
-    public void OnJump(InputValue value)
-    {
-        if (value.isPressed)
-            Jump();
-    }
-
-    public void OnAbility(InputAction.CallbackContext context)
-    {
-        if (context.performed)
-        {
-            UseAbility(true);
-        }
-        else if (context.canceled)
-        {
-            UseAbility(false);
-        }
-    }
-
-    private void Move()
+    public void Move()
     {
         if (cameraTransform == null)
         {
@@ -482,7 +328,7 @@ public abstract class CharacterBase : MonoBehaviour
     }
 
     //todo сделать привязку секунд к длительности анимаций
-    protected IEnumerator EnablingCollider(float seconds, int weaponIndex, int colliderIndex = 0)
+    protected IEnumerator EnablingCollider(float seconds, int weaponIndex, int points = 0, string actionName = "", int colliderIndex = 0)
     {
         if (weaponSlots[weaponIndex].weaponObject != null &&
             colliderIndex < weaponSlots[weaponIndex].weaponObject.Length &&
@@ -492,6 +338,7 @@ public abstract class CharacterBase : MonoBehaviour
             if (collider != null)
             {
                 collider.enabled = true;
+                styleManager.AddStylePoints(points, actionName);
                 yield return new WaitForSeconds(seconds);
                 collider.enabled = false;
             }
@@ -503,6 +350,6 @@ public abstract class CharacterBase : MonoBehaviour
     public abstract void PerformRangedAttack();
     public abstract void PerformRangedAim();
     public abstract void UseAbility(bool isHold);
-    protected abstract void Dodge();
+    public abstract void Dodge();
     //public abstract void Riding();
 }

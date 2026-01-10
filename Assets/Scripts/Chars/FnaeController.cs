@@ -1,17 +1,17 @@
+using UnityEditor;
 using UnityEngine;
 
 public class FnaeController : CharacterBase
 {
     [Header("Настройки Фная")]
     public float burnDamage = 10f;
-    public GameObject fireEffect;
-
-    Enemy enemy;
+    public GameObject molotovPrefab;
+    //public GameObject fireEffect;
 
     public override void PerformMeleeAttack()
     {
         Debug.Log($"Фнай: атака {damageMultiplier}");
-        StartCoroutine(EnablingCollider(1f, 0));
+        StartCoroutine(EnablingCollider(1f, 0, 10, "Кулаками"));
         //CreateBurnEffect();
     }
 
@@ -24,10 +24,10 @@ public class FnaeController : CharacterBase
     public override void UseAbility(bool isHold)
     {
         Debug.Log($"Фнай: молотов {damageMultiplier}");
-        IgniteArea();
+        ShootFireProjectile();
     }
 
-    protected override void Dodge()
+    public override void Dodge()
     {
         Debug.Log("Фнай: уворот на тиранозавре");
     }
@@ -42,21 +42,24 @@ public class FnaeController : CharacterBase
 
     }
 
-    private void CreateBurnEffect()
+    /*private void CreateBurnEffect()
     {
         // TODO: добавить мультипликаторы урона к итоговой реализации
         if (fireEffect != null)
         {
             Instantiate(fireEffect, transform.position, Quaternion.identity);
         }
-    }
+    }*/
 
     private void ShootFireProjectile()
     {
         // TODO: добавить мультипликаторы урона к итоговой реализации
-        GameObject projectile = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        projectile.transform.position = transform.position + transform.forward;
+
+        GameObject projectile = Instantiate(molotovPrefab, transform.position + transform.up * 2, Quaternion.identity);
+        Rigidbody molotovPhys = projectile.GetComponent<Rigidbody>();
+
         projectile.GetComponent<Renderer>().material.color = Color.red;
+        molotovPhys.velocity = new Vector3(cameraFollow.transform.forward.x * moveSpeed, 5f, cameraFollow.transform.forward.z * moveSpeed);
         // TO DO: добавить Rigidbody и логику полета
     }
 

@@ -1,22 +1,19 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class RodionController : CharacterBase
 {
-    [Header("Настройки Родиона")]
-    public StyleManager styleManager;
+    [Header("РќР°СЃС‚СЂРѕР№РєРё Р РѕРґРёРѕРЅР°")]
     public WeaponRaycast raycast;
 
-    [Header("Множители стиля")]
+    [Header("РњРЅРѕР¶РёС‚РµР»Рё СЃС‚РёР»СЏ")]
     public int stylePerHit = 20;
     public int stylePerKill = 40;
     public int stylePerDodge = 10;
     public int stylePerCombo = 30;
-
-    [Header("Эффекты разрешения")]
-    public RenderTexture[] resolutionRenderTextures; // 1080p, 4K, 16K, 64K, 666K
 
     public override void OnCharacterSelected()
     {
@@ -25,55 +22,29 @@ public class RodionController : CharacterBase
         {
             styleManager.SwitchToRodionStyle();
         }
-        // Начальное разрешение
-        UpdateResolutionEffect("1080p");
     }
 
     public override void OnCharacterDeselected()
     {
         base.OnCharacterDeselected();
-        // ResetResolution();
     }
 
     public override void PerformMeleeAttack()
     {
-        Debug.Log("Родион: атака лобзиком");
+        Debug.Log("Р РѕРґРёРѕРЅ: Р°С‚Р°РєР° Р»РѕР±Р·РёРєРѕРј");
         if (styleManager != null && styleManager.IsStyleActive())
         {
-            styleManager.AddStylePoints(stylePerHit, "Атака лобзиком");
+            styleManager.AddStylePoints(stylePerHit, "РђС‚Р°РєР° Р»РѕР±Р·РёРєРѕРј");
         }
     }
 
     public override void PerformRangedAttack()
     {
-        Debug.Log("Родион: выстрел аннигилятором");
+        Debug.Log("Р РѕРґРёРѕРЅ: РІС‹СЃС‚СЂРµР» Р°РЅРЅРёРіРёР»СЏС‚РѕСЂРѕРј");
         ShootAnnihilator();
         if (styleManager != null && styleManager.IsStyleActive())
         {
-            styleManager.AddStylePoints(stylePerHit, "Выстрел аннигилятором");
-        }
-    }
-
-    private void UpdateResolutionEffect(string levelName)
-    {
-        // TO DO: реализовать эффекты изменения разрешения
-        switch (levelName)
-        {
-            case "1080p":
-                // Screen.SetResolution(1920, 1080, false);
-                break;
-            case "4K":
-
-                break;
-            case "16K":
-
-                break;
-            case "64K":
-
-                break;
-            case "666K":
-
-                break;
+            styleManager.AddStylePoints(stylePerHit, "Р’С‹СЃС‚СЂРµР» Р°РЅРЅРёРіРёР»СЏС‚РѕСЂРѕРј");
         }
     }
 
@@ -81,7 +52,7 @@ public class RodionController : CharacterBase
     {
         if (isHold)
         {
-            Debug.Log("Родион: таунт");
+            Debug.Log("Р РѕРґРёРѕРЅ: С‚Р°СѓРЅС‚");
             Taunt(true);
         }
         else
@@ -92,10 +63,10 @@ public class RodionController : CharacterBase
 
     }
 
-    protected override void Dodge()
+    public override void Dodge()
     {
-        Debug.Log("Родион: уворот");
-        // TO DO: уворот
+        Debug.Log("Р РѕРґРёРѕРЅ: СѓРІРѕСЂРѕС‚");
+        // TO DO: СѓРІРѕСЂРѕС‚
     }
 
     public override void PerformMeleeChargeAttack()
@@ -116,7 +87,7 @@ public class RodionController : CharacterBase
         }
         else
         {
-            Debug.LogWarning("WeaponRaycast не назначен для Родиона");
+            Debug.LogWarning("WeaponRaycast РЅРµ РЅР°Р·РЅР°С‡РµРЅ РґР»СЏ Р РѕРґРёРѕРЅР°");
         }
     }
 
@@ -131,27 +102,27 @@ using UnityEngine;
 
 public class RodionController : CharacterBase
 {
-    [Header("Настройки Родиона - Стиль")]
+    [Header("РќР°СЃС‚СЂРѕР№РєРё Р РѕРґРёРѕРЅР° - РЎС‚РёР»СЊ")]
     public StyleManager styleManager;
     
-    [Header("Оружие")]
-    public GameObject jigsawWeapon; // Лобзик для ближнего боя
-    public GameObject annihilatorWeapon; // Аннигилятор для дальнего боя
+    [Header("РћСЂСѓР¶РёРµ")]
+    public GameObject jigsawWeapon; // Р›РѕР±Р·РёРє РґР»СЏ Р±Р»РёР¶РЅРµРіРѕ Р±РѕСЏ
+    public GameObject annihilatorWeapon; // РђРЅРЅРёРіРёР»СЏС‚РѕСЂ РґР»СЏ РґР°Р»СЊРЅРµРіРѕ Р±РѕСЏ
     
-    [Header("Множители стиля")]
+    [Header("РњРЅРѕР¶РёС‚РµР»Рё СЃС‚РёР»СЏ")]
     public int stylePerHit = 25;
     public int stylePerKill = 50;
     public int stylePerDodge = 15;
     public int stylePerCombo = 100;
     
-    [Header("Визуальные эффекты")]
+    [Header("Р’РёР·СѓР°Р»СЊРЅС‹Рµ СЌС„С„РµРєС‚С‹")]
     public GameObject styleTrailEffect;
-    public Material[] styleMaterials; // Материалы для разных уровней стиля
+    public Material[] styleMaterials; // РњР°С‚РµСЂРёР°Р»С‹ РґР»СЏ СЂР°Р·РЅС‹С… СѓСЂРѕРІРЅРµР№ СЃС‚РёР»СЏ
     
     private bool isWeaponActive = true;
     private int comboCount = 0;
     private float lastAttackTime = 0f;
-    private float comboWindow = 2f; // Окно для комбо в секундах
+    private float comboWindow = 2f; // РћРєРЅРѕ РґР»СЏ РєРѕРјР±Рѕ РІ СЃРµРєСѓРЅРґР°С…
 
     void Start()
     {
@@ -163,49 +134,49 @@ public class RodionController : CharacterBase
 
     public override void PerformMeleeAttack()
     {
-        Debug.Log("Родион: атака лобзиком");
+        Debug.Log("Р РѕРґРёРѕРЅ: Р°С‚Р°РєР° Р»РѕР±Р·РёРєРѕРј");
         JigsawAttack();
         
-        // Стиль за атаку
-        styleManager?.AddStylePoints(stylePerHit, "Атака лобзиком");
+        // РЎС‚РёР»СЊ Р·Р° Р°С‚Р°РєСѓ
+        styleManager?.AddStylePoints(stylePerHit, "РђС‚Р°РєР° Р»РѕР±Р·РёРєРѕРј");
         UpdateCombo();
     }
 
     public override void PerformRangedAttack()
     {
-        Debug.Log("Родион: выстрел аннигилятором");
+        Debug.Log("Р РѕРґРёРѕРЅ: РІС‹СЃС‚СЂРµР» Р°РЅРЅРёРіРёР»СЏС‚РѕСЂРѕРј");
         AnnihilatorAttack();
         
-        // Стиль за дальнюю атаку
-        styleManager?.AddStylePoints(stylePerHit, "Выстрел аннигилятором");
+        // РЎС‚РёР»СЊ Р·Р° РґР°Р»СЊРЅСЋСЋ Р°С‚Р°РєСѓ
+        styleManager?.AddStylePoints(stylePerHit, "Р’С‹СЃС‚СЂРµР» Р°РЅРЅРёРіРёР»СЏС‚РѕСЂРѕРј");
         UpdateCombo();
     }
 
     public override void UseAbility()
     {
-        Debug.Log("Родион: смена оружия и стильная поза");
+        Debug.Log("Р РѕРґРёРѕРЅ: СЃРјРµРЅР° РѕСЂСѓР¶РёСЏ Рё СЃС‚РёР»СЊРЅР°СЏ РїРѕР·Р°");
         ToggleWeapon();
         StylePose();
     }
 
     public override void Dodge()
     {
-        Debug.Log("Родион: стильный уворот");
+        Debug.Log("Р РѕРґРёРѕРЅ: СЃС‚РёР»СЊРЅС‹Р№ СѓРІРѕСЂРѕС‚");
         StylishDodge();
         
-        // Стиль за уворот
-        styleManager?.AddStylePoints(stylePerDodge, "Стильный уворот");
+        // РЎС‚РёР»СЊ Р·Р° СѓРІРѕСЂРѕС‚
+        styleManager?.AddStylePoints(stylePerDodge, "РЎС‚РёР»СЊРЅС‹Р№ СѓРІРѕСЂРѕС‚");
     }
 
     private void JigsawAttack()
     {
-        // Ближняя атака лобзиком
+        // Р‘Р»РёР¶РЅСЏСЏ Р°С‚Р°РєР° Р»РѕР±Р·РёРєРѕРј
         if (jigsawWeapon != null && isWeaponActive)
         {
-            // Анимация атаки
+            // РђРЅРёРјР°С†РёСЏ Р°С‚Р°РєРё
             PlayWeaponSwing();
             
-            // Проверка попадания
+            // РџСЂРѕРІРµСЂРєР° РїРѕРїР°РґР°РЅРёСЏ
             Collider[] hits = Physics.OverlapSphere(transform.position + transform.forward * 2f, 1.5f);
             foreach (var hit in hits)
             {
@@ -219,15 +190,15 @@ public class RodionController : CharacterBase
 
     private void AnnihilatorAttack()
     {
-        // Дальняя атака аннигилятором
+        // Р”Р°Р»СЊРЅСЏСЏ Р°С‚Р°РєР° Р°РЅРЅРёРіРёР»СЏС‚РѕСЂРѕРј
         if (annihilatorWeapon != null && !isWeaponActive)
         {
-            // Создание снаряда аннигилятора
+            // РЎРѕР·РґР°РЅРёРµ СЃРЅР°СЂСЏРґР° Р°РЅРЅРёРіРёР»СЏС‚РѕСЂР°
             GameObject projectile = CreateAnnihilatorProjectile();
             
-            // Применение множителя урона от стиля
+            // РџСЂРёРјРµРЅРµРЅРёРµ РјРЅРѕР¶РёС‚РµР»СЏ СѓСЂРѕРЅР° РѕС‚ СЃС‚РёР»СЏ
             float damageMultiplier = styleManager?.GetDamageMultiplier() ?? 1f;
-            // TO DO: передать множитель урона в снаряд
+            // TO DO: РїРµСЂРµРґР°С‚СЊ РјРЅРѕР¶РёС‚РµР»СЊ СѓСЂРѕРЅР° РІ СЃРЅР°СЂСЏРґ
         }
     }
 
@@ -235,50 +206,50 @@ public class RodionController : CharacterBase
     {
         isWeaponActive = !isWeaponActive;
         
-        // Визуальное переключение оружия
+        // Р’РёР·СѓР°Р»СЊРЅРѕРµ РїРµСЂРµРєР»СЋС‡РµРЅРёРµ РѕСЂСѓР¶РёСЏ
         if (jigsawWeapon != null)
             jigsawWeapon.SetActive(isWeaponActive);
             
         if (annihilatorWeapon != null)
             annihilatorWeapon.SetActive(!isWeaponActive);
             
-        Debug.Log($"Родион сменил оружие на: {(isWeaponActive ? "Лобзик" : "Аннигилятор")}");
+        Debug.Log($"Р РѕРґРёРѕРЅ СЃРјРµРЅРёР» РѕСЂСѓР¶РёРµ РЅР°: {(isWeaponActive ? "Р›РѕР±Р·РёРє" : "РђРЅРЅРёРіРёР»СЏС‚РѕСЂ")}");
         
-        // Стиль за смену оружия
-        styleManager?.AddStylePoints(30, "Смена оружия");
+        // РЎС‚РёР»СЊ Р·Р° СЃРјРµРЅСѓ РѕСЂСѓР¶РёСЏ
+        styleManager?.AddStylePoints(30, "РЎРјРµРЅР° РѕСЂСѓР¶РёСЏ");
     }
 
     private void StylishDodge()
     {
-        // Уворот с элементами стиля
+        // РЈРІРѕСЂРѕС‚ СЃ СЌР»РµРјРµРЅС‚Р°РјРё СЃС‚РёР»СЏ
         float styleBonus = styleManager?.GetMoveSpeedBonus() ?? 0f;
         float dodgeSpeed = moveSpeed * (1.5f + styleBonus);
         
-        // TO DO: реализация уворота с трейлами и эффектами
+        // TO DO: СЂРµР°Р»РёР·Р°С†РёСЏ СѓРІРѕСЂРѕС‚Р° СЃ С‚СЂРµР№Р»Р°РјРё Рё СЌС„С„РµРєС‚Р°РјРё
         CreateDodgeTrail();
     }
 
     private void StylePose()
     {
-        // Стильная поза - увеличивает стиль, но оставляет уязвимым
-        Debug.Log("Родион принимает стильную позу!");
+        // РЎС‚РёР»СЊРЅР°СЏ РїРѕР·Р° - СѓРІРµР»РёС‡РёРІР°РµС‚ СЃС‚РёР»СЊ, РЅРѕ РѕСЃС‚Р°РІР»СЏРµС‚ СѓСЏР·РІРёРјС‹Рј
+        Debug.Log("Р РѕРґРёРѕРЅ РїСЂРёРЅРёРјР°РµС‚ СЃС‚РёР»СЊРЅСѓСЋ РїРѕР·Сѓ!");
         
-        // Большой бонус к стилю за риск
-        styleManager?.AddStylePoints(75, "Стильная поза");
+        // Р‘РѕР»СЊС€РѕР№ Р±РѕРЅСѓСЃ Рє СЃС‚РёР»СЋ Р·Р° СЂРёСЃРє
+        styleManager?.AddStylePoints(75, "РЎС‚РёР»СЊРЅР°СЏ РїРѕР·Р°");
         
-        // Визуальный эффект
+        // Р’РёР·СѓР°Р»СЊРЅС‹Р№ СЌС„С„РµРєС‚
         CreatePoseEffect();
     }
 
     private void UpdateCombo()
     {
-        // Система комбо
+        // РЎРёСЃС‚РµРјР° РєРѕРјР±Рѕ
         if (Time.time - lastAttackTime <= comboWindow)
         {
             comboCount++;
-            if (comboCount % 3 == 0) // Каждые 3 удара в комбо
+            if (comboCount % 3 == 0) // РљР°Р¶РґС‹Рµ 3 СѓРґР°СЂР° РІ РєРѕРјР±Рѕ
             {
-                styleManager?.AddStylePoints(stylePerCombo, $"Комбо x{comboCount}");
+                styleManager?.AddStylePoints(stylePerCombo, $"РљРѕРјР±Рѕ x{comboCount}");
                 CreateComboEffect();
             }
         }
@@ -292,35 +263,35 @@ public class RodionController : CharacterBase
 
     private void OnEnemyHit(GameObject enemy)
     {
-        // Обработка попадания по врагу
-        Debug.Log($"Родион попал по врагу! Стиль +{stylePerHit}");
+        // РћР±СЂР°Р±РѕС‚РєР° РїРѕРїР°РґР°РЅРёСЏ РїРѕ РІСЂР°РіСѓ
+        Debug.Log($"Р РѕРґРёРѕРЅ РїРѕРїР°Р» РїРѕ РІСЂР°РіСѓ! РЎС‚РёР»СЊ +{stylePerHit}");
         
-        // TO DO: логика нанесения урона с учетом множителя стиля
+        // TO DO: Р»РѕРіРёРєР° РЅР°РЅРµСЃРµРЅРёСЏ СѓСЂРѕРЅР° СЃ СѓС‡РµС‚РѕРј РјРЅРѕР¶РёС‚РµР»СЏ СЃС‚РёР»СЏ
         float damageMultiplier = styleManager?.GetDamageMultiplier() ?? 1f;
         
-        // Визуальная обратная связь
+        // Р’РёР·СѓР°Р»СЊРЅР°СЏ РѕР±СЂР°С‚РЅР°СЏ СЃРІСЏР·СЊ
         CreateHitEffect(enemy.transform.position);
     }
 
     public void OnEnemyKilled()
     {
-        // Вызывается при убийстве врага
-        styleManager?.AddStylePoints(stylePerKill, "Убийство");
+        // Р’С‹Р·С‹РІР°РµС‚СЃСЏ РїСЂРё СѓР±РёР№СЃС‚РІРµ РІСЂР°РіР°
+        styleManager?.AddStylePoints(stylePerKill, "РЈР±РёР№СЃС‚РІРѕ");
         comboCount++;
     }
 
-    // Визуальные эффекты
+    // Р’РёР·СѓР°Р»СЊРЅС‹Рµ СЌС„С„РµРєС‚С‹
     private void CreateAnnihilatorProjectile()
     {
         GameObject projectile = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         projectile.transform.position = transform.position + transform.forward + Vector3.up;
         projectile.transform.localScale = Vector3.one * 0.5f;
         
-        // Цвет в зависимости от уровня стиля
+        // Р¦РІРµС‚ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ СѓСЂРѕРІРЅСЏ СЃС‚РёР»СЏ
         Color styleColor = styleManager?.currentStyleLevel.styleColor ?? Color.white;
         projectile.GetComponent<Renderer>().material.color = styleColor;
         
-        // Физика снаряда
+        // Р¤РёР·РёРєР° СЃРЅР°СЂСЏРґР°
         Rigidbody rb = projectile.AddComponent<Rigidbody>();
         rb.useGravity = false;
         rb.velocity = transform.forward * 15f;
@@ -335,7 +306,7 @@ public class RodionController : CharacterBase
             GameObject trail = Instantiate(styleTrailEffect, transform.position, Quaternion.identity);
             trail.transform.SetParent(transform);
             
-            // Цвет трейла в зависимости от стиля
+            // Р¦РІРµС‚ С‚СЂРµР№Р»Р° РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ СЃС‚РёР»СЏ
             Color styleColor = styleManager?.currentStyleLevel.styleColor ?? Color.white;
             var trailRenderer = trail.GetComponent<TrailRenderer>();
             if (trailRenderer != null)
@@ -355,7 +326,7 @@ public class RodionController : CharacterBase
         poseAura.GetComponent<Renderer>().material.color = styleManager?.currentStyleLevel.styleColor ?? Color.yellow;
         poseAura.transform.localScale = Vector3.one * 3f;
         
-        // Сделать невидимым коллайдер
+        // РЎРґРµР»Р°С‚СЊ РЅРµРІРёРґРёРјС‹Рј РєРѕР»Р»Р°Р№РґРµСЂ
         Destroy(poseAura.GetComponent<Collider>());
         Destroy(poseAura, 1.5f);
     }
@@ -380,13 +351,13 @@ public class RodionController : CharacterBase
 
     private void PlayWeaponSwing()
     {
-        // TO DO: анимация взмаха оружием
-        Debug.Log("Взмах оружием!");
+        // TO DO: Р°РЅРёРјР°С†РёСЏ РІР·РјР°С…Р° РѕСЂСѓР¶РёРµРј
+        Debug.Log("Р’Р·РјР°С… РѕСЂСѓР¶РёРµРј!");
     }
 
     private void InitializeWeapons()
     {
-        // Инициализация начального состояния оружия
+        // РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РЅР°С‡Р°Р»СЊРЅРѕРіРѕ СЃРѕСЃС‚РѕСЏРЅРёСЏ РѕСЂСѓР¶РёСЏ
         if (jigsawWeapon != null)
             jigsawWeapon.SetActive(isWeaponActive);
             
@@ -394,7 +365,7 @@ public class RodionController : CharacterBase
             annihilatorWeapon.SetActive(!isWeaponActive);
     }
 
-    // Обновление визуала в зависимости от стиля
+    // РћР±РЅРѕРІР»РµРЅРёРµ РІРёР·СѓР°Р»Р° РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ СЃС‚РёР»СЏ
     void Update()
     {
         UpdateStyleVisuals();
@@ -402,8 +373,8 @@ public class RodionController : CharacterBase
 
     private void UpdateStyleVisuals()
     {
-        // TO DO: обновление материалов, эффектов в зависимости от уровня стиля
-        // Например: свечение, частицы, пост-обработка
+        // TO DO: РѕР±РЅРѕРІР»РµРЅРёРµ РјР°С‚РµСЂРёР°Р»РѕРІ, СЌС„С„РµРєС‚РѕРІ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ СѓСЂРѕРІРЅСЏ СЃС‚РёР»СЏ
+        // РќР°РїСЂРёРјРµСЂ: СЃРІРµС‡РµРЅРёРµ, С‡Р°СЃС‚РёС†С‹, РїРѕСЃС‚-РѕР±СЂР°Р±РѕС‚РєР°
     }
 }
 */

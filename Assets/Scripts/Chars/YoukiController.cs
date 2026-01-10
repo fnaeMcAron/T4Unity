@@ -24,8 +24,8 @@ public class YoukiController : CharacterBase
 
     public override void PerformMeleeAttack()
     {
-        StartCoroutine(EnablingCollider(2f, 0, 0));
-        StartCoroutine(EnablingCollider(2f, 0, 1));
+        StartCoroutine(EnablingCollider(2f, 0, 5, "Ножами", 0));
+        StartCoroutine(EnablingCollider(2f, 0, 5, "Ножами", 1));
         //PlayKnifeAttack();
     }
 
@@ -48,7 +48,7 @@ public class YoukiController : CharacterBase
         }
     }
 
-    protected override void Dodge()
+    public override void Dodge()
     {
         Debug.Log("Еки: уворот");
     }
@@ -109,7 +109,6 @@ public class YoukiController : CharacterBase
         if (availableTracks.Length == 0) return;
 
         MusicBuff currentBuff = availableTracks[currentTrackIndex];
-        Debug.Log($"Пытаюсь применить бафф: {currentBuff.buffName}");
 
         int buffsApplied = 0;
         foreach (CharacterBase character in allCharacters)

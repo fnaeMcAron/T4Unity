@@ -85,7 +85,6 @@ public class CameraFollow : MonoBehaviour
     void Update()
     {
         HandleCameraRotation();
-        UpdateCameraPosition();
     }
 
     void LateUpdate()
@@ -95,6 +94,11 @@ public class CameraFollow : MonoBehaviour
             FindPlayer();
             return;
         }
+    }
+
+    void FixedUpdate()
+    {
+        UpdateCameraPosition();
     }
 
     void HandleCameraRotation()
