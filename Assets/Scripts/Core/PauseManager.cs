@@ -45,7 +45,7 @@ public class PauseManager : MonoBehaviour
     void PauseGame()
     {
         Time.timeScale = 0f;
-        Debug.Log("Игра на паузе");
+        //Debug.Log("Игра на паузе");
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
@@ -55,7 +55,7 @@ public class PauseManager : MonoBehaviour
     void ResumeGame()
     {
         Time.timeScale = 1f;
-        Debug.Log("Игра продолжается");
+        //Debug.Log("Игра продолжается");
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 

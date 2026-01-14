@@ -26,6 +26,11 @@ public class CharacterManager : MonoBehaviour
     public CharacterBase currentCharacter;
     [SerializeField] private int currentCharacterIndex;
 
+    [Header("Настройки для интеракций")]
+    string interactTag = "Interactable";
+    [SerializeField] private float interactRadius = 10f;
+
+
     public CharacterBase CurrentCharacter => currentCharacter;
     public int CurrentCharacterIndex => currentCharacterIndex;
 
@@ -34,6 +39,7 @@ public class CharacterManager : MonoBehaviour
 
     public int unchargedAttackCount = 0;
     public float lastAttackTime = 0f;
+    Interactable closestInteractable = null;
 
     void Start()
     {
@@ -51,6 +57,7 @@ public class CharacterManager : MonoBehaviour
     {
         currentState.Update(this);
         DEBUG.text = "DB: " + currentState + " " + currentCharacter.isGrounded;
+        CheckDistanceToObjects();
     }
 
     private void LateUpdate()
@@ -73,7 +80,7 @@ public class CharacterManager : MonoBehaviour
         if (index < 0 || index >= characters.Length) return;
 
         Vector2 savedMoveInput = currentCharacter.moveInput;
-        Debug.Log(currentCharacter.moveInput);
+        //Debug.Log(currentCharacter.moveInput);
         Vector3 prevPos = currentCharacter.transform.localPosition;
         Quaternion prevRot = currentCharacter.transform.localRotation;
         Vector3 prevVel = currentCharacter.GetComponent<Rigidbody>().velocity;
@@ -136,7 +143,56 @@ public class CharacterManager : MonoBehaviour
         currentState.Enter(this);
     }
 
+    void CheckDistanceToObjects()
+    {
+        Collider[] colliders = Physics.OverlapSphere(currentCharacter.transform.position, interactRadius);
+        float closestDistance = Mathf.Infinity;
+        Vector3 playerPosition = currentCharacter.transform.position;
 
+        // Сначала собираем все interactable объекты и находим ближайший
+        foreach (Collider col in colliders)
+        {
+            Interactable script = col.GetComponent<Interactable>();
+
+            if (script != null)
+            {
+                float distance = Vector3.Distance(playerPosition, col.transform.position);
+
+                if (distance <= interactRadius)
+                {
+                    // Сохраняем самый близкий объект
+                    if (distance < closestDistance)
+                    {
+                        closestDistance = distance;
+                        closestInteractable = script;
+                    }
+                }
+            }
+        }
+
+        // Теперь проходим еще раз и применяем логику отображения
+        foreach (Collider col in colliders)
+        {
+            Interactable script = col.GetComponent<Interactable>();
+
+            if (script != null)
+            {
+                float distance = Vector3.Distance(playerPosition, col.transform.position);
+
+                if (distance <= interactRadius)
+                {
+                    // Проверяем, является ли этот объект ближайшим
+                    bool isClosest = (script == closestInteractable);
+                    script.DrawGUI(distance, isClosest);
+                }
+                else
+                {
+                    script.DeactivateDebug();
+                    closestInteractable = null;
+                }
+            }
+        }
+    }
 
 
 
@@ -188,6 +244,17 @@ public class CharacterManager : MonoBehaviour
         {
             currentCharacter.ResetCamera();
 
+        }
+    }
+
+    public void OnInteract(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            if (closestInteractable != null)
+                closestInteractable.OnInteract();
+            else
+                Debug.Log("Ближайшего нет");
         }
     }
 
