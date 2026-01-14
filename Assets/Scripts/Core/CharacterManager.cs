@@ -15,10 +15,10 @@ public class CharacterManager : MonoBehaviour
     public IdleState idleState = new IdleState();
     public MidairState midairState = new MidairState();
     public AbilityState abilityState = new AbilityState();
-    public AttackState attackState = new AttackState(true);
+    public AttackState attackState = new AttackState();
     public DodgeState dodgeState = new DodgeState(true);
     public HoldenAbilityState holdenAbilityState = new HoldenAbilityState();
-    public HoldenAttackState holdenAttackState = new HoldenAttackState(true);
+    public HoldenAttackState holdenAttackState = new HoldenAttackState();
     public HoldenDodgeState holdenDodgeState = new HoldenDodgeState();
 
     [Header("Текущие данные")]
@@ -32,8 +32,8 @@ public class CharacterManager : MonoBehaviour
     public delegate void DeathAction();
     public static event DeathAction OnDeath;
 
-    int unchargedAttackCount = 0;
-    float lastAttackTime = 0f;
+    public int unchargedAttackCount = 0;
+    public float lastAttackTime = 0f;
 
     void Start()
     {
@@ -187,6 +187,7 @@ public class CharacterManager : MonoBehaviour
         else if (context.canceled)
         {
             currentCharacter.ResetCamera();
+
         }
     }
 
@@ -205,62 +206,8 @@ public class CharacterManager : MonoBehaviour
     public void OnAttack(InputAction.CallbackContext context)
     {
         if (context.performed)
-            SwitchState(new AttackState(!currentCharacter.isGrounded));
+            SwitchState(attackState);
         else if (context.canceled)
-            SwitchState(new HoldenAttackState(!currentCharacter.isGrounded));
-
-        if (context.performed)
-        {
-            if (Time.time - lastAttackTime > currentCharacter.comboTimeWindow)
-            {
-                unchargedAttackCount = 0;
-            }
-
-            unchargedAttackCount++;
-            lastAttackTime = Time.time;
-
-            if (unchargedAttackCount > currentCharacter.maxComboCount)
-            {
-                unchargedAttackCount = 0;
-            }
-
-            Debug.Log($"Комбо: {unchargedAttackCount} незаряженных атак");
-
-            if (currentCharacter.currentWeaponIndex == 0)
-            {
-                // Генерируем случайную атаку от 1 до 2
-                int attackIndex = Random.Range(1, 3);
-
-                // Запускаем соответствующую анимацию атаки
-                if (attackIndex == 1)
-                {
-                    currentCharacter.animator.SetTrigger(currentCharacter.firstMeleeAttackTriggerHash);
-                }
-                else if (attackIndex == 2)
-                {
-                    currentCharacter.animator.SetTrigger(currentCharacter.secondMeleeAttackTriggerHash);
-                }
-
-                currentCharacter.PerformMeleeAttack();
-            }
-            else if (currentCharacter.currentWeaponIndex == 1)
-            {
-                currentCharacter.animator.SetTrigger(currentCharacter.rangedAttackHash);
-                currentCharacter.PerformRangedAttack();
-            }
-
-            lastAttackTime = Time.time;
-        }
-        else if (context.canceled)
-        {
-            if (currentCharacter.currentWeaponIndex == 0)
-            {
-                currentCharacter.PerformMeleeChargeAttack();
-            }
-            else if (currentCharacter.currentWeaponIndex == 1)
-            {
-                currentCharacter.PerformRangedAim();
-            }
-        }
+            SwitchState(holdenAttackState);
     }
 }

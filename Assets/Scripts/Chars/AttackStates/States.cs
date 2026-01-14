@@ -72,16 +72,64 @@ public class AbilityState : StateBase
 //атака
 public class AttackState : StateBase
 {
-    public AttackState(bool midair) { }
+    public AttackState() { }
 
     public override void Enter(CharacterManager charman)
     {
+        if (Time.time - charman.lastAttackTime > charman.currentCharacter.comboTimeWindow)
+        {
+            charman.unchargedAttackCount = 0;
+        }
 
+        charman.unchargedAttackCount++;
+        charman.lastAttackTime = Time.time;
+
+        if (charman.unchargedAttackCount > charman.currentCharacter.maxComboCount)
+        {
+            charman.unchargedAttackCount = 0;
+        }
+
+        Debug.Log($"Комбо: {charman.unchargedAttackCount} незаряженных атак");
+
+        if (charman.currentCharacter.currentWeaponIndex == 0)
+        {
+            // Генерируем случайную атаку от 1 до 2
+            int attackIndex = Random.Range(1, 3);
+
+            // Запускаем соответствующую анимацию атаки
+            if (attackIndex == 1)
+            {
+                charman.currentCharacter.animator.SetTrigger(charman.currentCharacter.firstMeleeAttackTriggerHash);
+            }
+            else if (attackIndex == 2)
+            {
+                charman.currentCharacter.animator.SetTrigger(charman.currentCharacter.secondMeleeAttackTriggerHash);
+            }
+
+            charman.currentCharacter.PerformMeleeAttack();
+        }
+        else if (charman.currentCharacter.currentWeaponIndex == 1)
+        {
+            charman.currentCharacter.animator.SetTrigger(charman.currentCharacter.rangedAttackHash);
+            charman.currentCharacter.PerformRangedAttack();
+        }
+
+        charman.lastAttackTime = Time.time;
     }
 
     public override void Update(CharacterManager charman)
     {
-
+        if (charman.currentCharacter.moveInput != Vector2.zero)
+        {
+            if (charman.currentCharacter.isGrounded)
+            {
+                charman.SwitchState(charman.idleState);
+            }
+            else
+            {
+                charman.SwitchState(charman.midairState);
+            }
+        }
     }
 
     public override void Exit(CharacterManager charman)
@@ -125,16 +173,33 @@ public class DodgeState : StateBase
 //зажатая атака
 public class HoldenAttackState : StateBase
 {
-    public HoldenAttackState(bool midair) { }
+    public HoldenAttackState() { }
 
     public override void Enter(CharacterManager charman)
     {
-
+        if (charman.currentCharacter.currentWeaponIndex == 0)
+        {
+            charman.currentCharacter.PerformMeleeChargeAttack();
+        }
+        else if (charman.currentCharacter.currentWeaponIndex == 1)
+        {
+            charman.currentCharacter.PerformRangedAim();
+        }
     }
 
     public override void Update(CharacterManager charman)
     {
-
+        if (charman.currentCharacter.moveInput != Vector2.zero)
+        {
+            if (charman.currentCharacter.isGrounded)
+            {
+                charman.SwitchState(charman.idleState);
+            }
+            else
+            {
+                charman.SwitchState(charman.midairState);
+            }
+        }
     }
 
     public override void Exit(CharacterManager charman)
