@@ -11,6 +11,7 @@ public class Interactable : MonoBehaviour
     public GameObject DFirst;
 
     [Header("Настройки интеракции")]
+    [SerializeField] bool isDestroy;
     public UnityEvent onInteractEvent;
 
     void Start()
@@ -41,6 +42,7 @@ public class Interactable : MonoBehaviour
     public void OnInteract()
     {
         onInteractEvent?.Invoke();
-        Destroy(this.gameObject);
+        if (isDestroy)
+            Destroy(this.gameObject);
     }
 }

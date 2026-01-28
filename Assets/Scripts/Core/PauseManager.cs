@@ -1,9 +1,12 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Windows;
 
 public class PauseManager : MonoBehaviour
 {
     public static PauseManager Instance { get; private set; }
+    public PlayerInput input;
+    public CharacterManager characterManager;
     bool isPaused = false;
 
     void Awake()
@@ -45,20 +48,22 @@ public class PauseManager : MonoBehaviour
     void PauseGame()
     {
         Time.timeScale = 0f;
-        //Debug.Log("Игра на паузе");
+        input.defaultActionMap = "UI";
+        characterManager.enabled = false;
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-
         // PauseUI.SetActive(true);
     }
 
     void ResumeGame()
     {
         Time.timeScale = 1f;
-        //Debug.Log("Игра продолжается");
+        input.defaultActionMap = "Player";
+        characterManager.enabled = true;
+
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-
         // PauseUI.SetActive(false);
     }
 

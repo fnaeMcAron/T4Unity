@@ -146,9 +146,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 80
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!65 &1957860492381961144
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -156,7 +156,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 568248497780583996}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 7aab0563b50cb614f831ab4c96abf3fd, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -342,7 +342,7 @@ GameObject:
   - component: {fileID: 6305171202913554428}
   - component: {fileID: 4968049172491729167}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Bandicam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -355,16 +355,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 677315809986854670}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.00025749207}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 6676993599675255426}
+  m_Father: {fileID: 2791213855064079717}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -105.1001}
+  m_AnchoredPosition: {x: -795.0448, y: 294.89972}
   m_SizeDelta: {x: 1200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6305171202913554428
@@ -568,7 +568,7 @@ GameObject:
   - component: {fileID: 5890125685780227318}
   - component: {fileID: 8863057731561529480}
   m_Layer: 5
-  m_Name: Worms
+  m_Name: HP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -916,9 +916,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 80
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!65 &6514753097057216304
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -926,7 +926,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1776821761724609118}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 7aab0563b50cb614f831ab4c96abf3fd, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -1506,6 +1506,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65a140a5a4ff94c46999e650b960eafd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  input: {fileID: 3616999236164057716}
+  characterManager: {fileID: 5705571357197470052}
 --- !u!114 &5705571357197470052
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1985,7 +1987,7 @@ GameObject:
   - component: {fileID: 4087861033983679837}
   - component: {fileID: 6614024929596936659}
   m_Layer: 0
-  m_Name: Main Camera
+  m_Name: Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2080,6 +2082,7 @@ MonoBehaviour:
   offset: {x: 3, y: 2, z: -5}
   smoothSpeed: 0.125
   rotationSpeed: 1
+  gamepadMultiplier: 50
   verticalAngleLimit: 80
   invertY: 0
   minDistance: 2
@@ -2805,7 +2808,7 @@ Rigidbody:
   serializedVersion: 4
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 500
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -2819,9 +2822,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 80
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!65 &478106146493826599
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2829,7 +2832,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3344701023112382683}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 7aab0563b50cb614f831ab4c96abf3fd, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -3097,9 +3100,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 80
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!65 &9189998989974293524
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3107,7 +3110,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3533306668906381996}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 7aab0563b50cb614f831ab4c96abf3fd, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -4083,7 +4086,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2791213855064079717}
   m_Layer: 5
-  m_Name: swaga
+  m_Name: Stylemeter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4101,6 +4104,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 6878085022619017789}
   - {fileID: 3722544215373046840}
   - {fileID: 3067633436987959464}
   - {fileID: 3267105642677999431}
@@ -4648,7 +4652,7 @@ GameObject:
   - component: {fileID: 5628449884679491300}
   - component: {fileID: 4877692807520177160}
   m_Layer: 5
-  m_Name: EnemyHealth
+  m_Name: EnemyHP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5426,7 +5430,7 @@ GameObject:
   - component: {fileID: 5269864554509917410}
   - component: {fileID: 2097990743599731623}
   m_Layer: 5
-  m_Name: Song
+  m_Name: MusBuffs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5748,9 +5752,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 80
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!65 &3599827949293474654
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5758,7 +5762,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7331055440843248591}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 7aab0563b50cb614f831ab4c96abf3fd, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -6342,7 +6346,7 @@ GameObject:
   - component: {fileID: 7750035560538275050}
   - component: {fileID: 2119584846277217637}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: UICanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6364,7 +6368,6 @@ RectTransform:
   - {fileID: 7532420674869354571}
   - {fileID: 4252135359579718108}
   - {fileID: 2791213855064079717}
-  - {fileID: 6878085022619017789}
   - {fileID: 8510138713106697055}
   m_Father: {fileID: 2623866066364004746}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6532,7 +6535,7 @@ GameObject:
   - component: {fileID: 6798555700462204778}
   - component: {fileID: 1210244452858665807}
   m_Layer: 5
-  m_Name: renderer
+  m_Name: RenderCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

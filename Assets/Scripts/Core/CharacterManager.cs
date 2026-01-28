@@ -77,6 +77,9 @@ public class CharacterManager : MonoBehaviour
 
     public void SwitchToCharacter(int index)
     {
+        if (PauseManager.Instance.IsGamePaused())
+            return;
+
         if (index < 0 || index >= characters.Length) return;
 
         Vector2 savedMoveInput = currentCharacter.moveInput;
@@ -272,6 +275,9 @@ public class CharacterManager : MonoBehaviour
 
     public void OnAttack(InputAction.CallbackContext context)
     {
+        if (PauseManager.Instance.IsGamePaused())
+            return;
+
         if (context.performed)
             SwitchState(attackState);
         else if (context.canceled)

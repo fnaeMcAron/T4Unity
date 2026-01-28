@@ -10,6 +10,7 @@ public class CameraFollow : MonoBehaviour
 
     [Header("Вращение камеры")]
     public float rotationSpeed = 2f;
+    public float gamepadMultiplier = 50f;
     public float verticalAngleLimit = 80f;
     public bool invertY = false;
 
@@ -19,16 +20,16 @@ public class CameraFollow : MonoBehaviour
     public float zoomSpeed = 2f;
 
     [Header("Коллизии камеры")]
-    public LayerMask collisionMask = ~0; // Все слои по умолчанию
+    public LayerMask collisionMask = 0;
     public float cameraRadius = 0.3f;
     public float collisionOffset = 0.2f;
     public float minWallDistance = 0.1f;
 
     [Header("Экстренные позиции")]
     public bool enableFallbackPositions = true;
-    public float[] fallbackAngles = { 0f, 30f, -30f, 45f, -45f }; // Углы для поиска позиции
+    public float[] fallbackAngles = { 0f, 30f, -30f, 45f, -45f };
     public float fallbackDistanceMultiplier = 0.7f;
-    public float emergencyForwardOffset = 0.5f; // Сдвиг вперед если совсем нет места
+    public float emergencyForwardOffset = 0.5f;
 
     [Header("Смена персонажа")]
     public bool preserveCameraOrientation = true;
@@ -39,7 +40,6 @@ public class CameraFollow : MonoBehaviour
     // Система ввода
     private TInputControls cameraInput;
     private InputAction lookAction;
-    private InputAction zoomAction;
     private InputAction cursorAction;
 
     // Приватные переменные
@@ -127,11 +127,21 @@ public class CameraFollow : MonoBehaviour
         if (!target || !isCursorLocked) return;
 
         Vector2 lookInput = lookAction.ReadValue<Vector2>();
-        float mouseX = lookInput.x * rotationSpeed * 0.1f;
-        float mouseY = lookInput.y * rotationSpeed * 0.1f * (invertY ? 1 : -1);
+        //Debug.Log(target.GetComponentInParent<PlayerInput>().currentControlScheme);
+        if (target.GetComponentInParent<PlayerInput>().currentControlScheme == "Gamepad")
+        {
+            float mouseX = lookInput.x * rotationSpeed * gamepadMultiplier * 0.1f;
+            float mouseY = lookInput.y * rotationSpeed * gamepadMultiplier * 0.1f * (invertY ? 1 : -1);
+            currentRotationY += mouseX;
+            currentRotationX += mouseY;
+        } else
+        {
+            float mouseX = lookInput.x * rotationSpeed * 0.1f;
+            float mouseY = lookInput.y * rotationSpeed * 0.1f * (invertY ? 1 : -1);
+            currentRotationY += mouseX;
+            currentRotationX += mouseY;
+        }
 
-        currentRotationY += mouseX;
-        currentRotationX += mouseY;
         currentRotationX = Mathf.Clamp(currentRotationX, -verticalAngleLimit, verticalAngleLimit);
     }
 
@@ -142,35 +152,27 @@ public class CameraFollow : MonoBehaviour
         Quaternion rotation = Quaternion.Euler(currentRotationX, currentRotationY, 0);
         Vector3 desiredPosition = target.position + rotation * new Vector3(0, 0, -currentDistance);
 
-        // Целевая точка, куда смотрит камера (обычно голова игрока)
         Vector3 targetLookAt = target.position + Vector3.up * offset.y;
-
-        // Основная проверка коллизий
         Vector3 adjustedPosition = CheckCameraCollision(desiredPosition, targetLookAt);
 
-        // Если после коррекции цель не видна, ищем альтернативную позицию
         if (!IsTargetVisible(adjustedPosition, targetLookAt))
         {
             adjustedPosition = FindAlternativeCameraPosition(desiredPosition, targetLookAt);
 
-            // Если даже альтернативная позиция не работает, используем экстренное положение
             if (!IsTargetVisible(adjustedPosition, targetLookAt))
             {
                 adjustedPosition = GetEmergencyPosition(targetLookAt);
             }
         }
 
-        // Сохраняем последнюю валидную позицию
         if (IsTargetVisible(adjustedPosition, targetLookAt))
         {
             lastValidPosition = adjustedPosition;
             lastValidRotation = Quaternion.LookRotation(targetLookAt - adjustedPosition);
         }
 
-        // Плавное движение камеры
         transform.position = Vector3.SmoothDamp(transform.position, adjustedPosition, ref velocity, smoothSpeed);
 
-        // Направляем камеру на цель
         Vector3 lookDirection = targetLookAt - transform.position;
         if (lookDirection != Vector3.zero)
         {
@@ -190,7 +192,6 @@ public class CameraFollow : MonoBehaviour
         Vector3 direction = desiredPosition - targetPos;
         float distance = direction.magnitude;
 
-        // Используем SphereCast для учета радиуса камеры
         RaycastHit hit;
         if (Physics.SphereCast(
             targetPos,
@@ -200,15 +201,12 @@ public class CameraFollow : MonoBehaviour
             distance,
             collisionMask))
         {
-            // Вычисляем безопасную позицию перед препятствием
             float safeDistance = Mathf.Max(hit.distance - collisionOffset, minWallDistance);
             Vector3 safePosition = targetPos + direction.normalized * safeDistance;
 
-            // Дополнительная проверка: если препятствие слишком близко к цели
             Vector3 fromObstacleToTarget = targetPos - hit.point;
             if (fromObstacleToTarget.magnitude < minWallDistance * 2f)
             {
-                // Препятствие слишком близко к цели - отодвигаем камеру вперед от цели
                 Vector3 forwardFromTarget = target.forward * emergencyForwardOffset;
                 safePosition = targetPos + forwardFromTarget;
             }
@@ -224,7 +222,6 @@ public class CameraFollow : MonoBehaviour
         Vector3 direction = toPosition - fromPosition;
         float distance = direction.magnitude;
 
-        // Проверяем, нет ли препятствий между камерой и целью
         RaycastHit hit;
         if (Physics.SphereCast(
             fromPosition,
@@ -234,7 +231,6 @@ public class CameraFollow : MonoBehaviour
             distance - 0.1f,
             collisionMask))
         {
-            // Проверяем, не попали ли мы в самого игрока
             if (hit.transform == target || hit.transform.IsChildOf(target))
                 return true;
 
@@ -249,7 +245,6 @@ public class CameraFollow : MonoBehaviour
         Vector3 bestPosition = originalPosition;
         float bestScore = 0f;
 
-        // Пробуем уменьшить дистанцию
         Vector3 direction = originalPosition - targetPos;
         float currentDistance = direction.magnitude;
 
@@ -260,7 +255,6 @@ public class CameraFollow : MonoBehaviour
 
             if (IsTargetVisible(testPosition, targetPos))
             {
-                // Оцениваем позицию (чем ближе к оригиналу, тем лучше)
                 float distanceScore = 1f - (i * 0.2f);
                 float visibilityScore = 1f;
 
@@ -272,7 +266,6 @@ public class CameraFollow : MonoBehaviour
             }
         }
 
-        // Пробуем разные углы, если предыдущие попытки не сработали
         if (!IsTargetVisible(bestPosition, targetPos) && enableFallbackPositions)
         {
             for (int i = 0; i < fallbackAngles.Length; i++)
@@ -295,10 +288,8 @@ public class CameraFollow : MonoBehaviour
 
     Vector3 GetEmergencyPosition(Vector3 targetPos)
     {
-        // Позиция прямо перед игроком на минимальной дистанции
         Vector3 forwardPosition = targetPos + target.forward * minDistance;
 
-        // Проверяем эту позицию на коллизии
         RaycastHit hit;
         if (Physics.SphereCast(
             targetPos,
@@ -308,14 +299,12 @@ public class CameraFollow : MonoBehaviour
             minDistance * 2f,
             collisionMask))
         {
-            // Если и вперед нельзя, пробуем вверх
             Vector3 upwardPosition = targetPos + Vector3.up * minDistance;
             if (!Physics.CheckSphere(upwardPosition, cameraRadius, collisionMask))
             {
                 return upwardPosition;
             }
 
-            // Если и вверх нельзя, возвращаем последнюю валидную позицию
             return lastValidPosition;
         }
 

@@ -123,6 +123,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DDistance: {fileID: 8019660345193340916}
   DFirst: {fileID: 8143255898526557648}
+  isDestroy: 1
   onInteractEvent:
     m_PersistentCalls:
       m_Calls: []
