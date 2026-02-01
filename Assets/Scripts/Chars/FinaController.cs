@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.ProBuilder;
 
 public class FinaController : CharacterBase
 {
@@ -6,6 +7,8 @@ public class FinaController : CharacterBase
     [Header("Особые настройки")]
     public float lowHealthDamageBonus = 2.0f;
     public float humiliationThreshold = 0.3f;
+    public GameObject spear;
+    public float spearSpeed;
 
     public override void OnCharacterSelected()
     {
@@ -85,6 +88,10 @@ public class FinaController : CharacterBase
 
     void ShootSpearProjectile()
     {
+        GameObject _projectile = Instantiate(spear, transform.position + Vector3.up * 4f, transform.rotation);
+        Vector3 direction = cameraFollow.gameObject.transform.forward;
+        _projectile.GetComponent<Rigidbody>().velocity = direction.normalized * spearSpeed;
+        /*
         // TODO: добавить мультипликаторы урона к итоговой реализации
         GameObject projectile = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         projectile.transform.position = transform.position + transform.forward;
@@ -95,7 +102,7 @@ public class FinaController : CharacterBase
         {
             styleManager.AddStylePoints(15, "Метание копья");
         }
-
+        */
         /*
         GameObject bullet = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         bullet.transform.position = transform.position + transform.forward;

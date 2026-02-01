@@ -286,6 +286,10 @@ public abstract class CharacterBase : MonoBehaviour
             Quaternion targetRotation = Quaternion.LookRotation(movement);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
+        else
+        {
+            rb.angularVelocity = Vector3.zero;
+        }
     }
 
     public virtual void Jump()

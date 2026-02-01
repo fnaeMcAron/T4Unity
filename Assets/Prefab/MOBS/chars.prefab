@@ -1531,7 +1531,7 @@ MonoBehaviour:
   cameraFollow: {fileID: 4087861033983679837}
   styleManager: {fileID: 4578958687063091193}
   DEBUG: {fileID: 722543274044163051}
-  currentCharacter: {fileID: 5692489219636108039}
+  currentCharacter: {fileID: 2032588588363428629}
   currentCharacterIndex: 1
   interactRadius: 10
   unchargedAttackCount: 0
@@ -2808,7 +2808,7 @@ Rigidbody:
   serializedVersion: 4
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: 500
+  m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -3177,6 +3177,8 @@ MonoBehaviour:
   isGrounded: 0
   lowHealthDamageBonus: 2
   humiliationThreshold: 0.3
+  spear: {fileID: 3259619214110645838, guid: b27154e6b7feb8a41b7d190980c631f1, type: 3}
+  spearSpeed: 100
 --- !u!95 &3810087241652416972
 Animator:
   serializedVersion: 5
