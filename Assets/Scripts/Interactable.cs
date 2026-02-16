@@ -9,6 +9,7 @@ public class Interactable : MonoBehaviour
 {
     public GameObject DDistance;
     public GameObject DFirst;
+    public GameObject sender;
 
     [Header("Настройки интеракции")]
     [SerializeField] bool isDestroy;
@@ -39,9 +40,10 @@ public class Interactable : MonoBehaviour
         DFirst.SetActive(false);
     }
 
-    public void OnInteract()
+    public void OnInteract(GameObject _sender)
     {
         onInteractEvent?.Invoke();
+        sender = _sender;
         if (isDestroy)
             Destroy(this.gameObject);
     }

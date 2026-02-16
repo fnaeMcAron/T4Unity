@@ -255,7 +255,7 @@ public class CharacterManager : MonoBehaviour
         if (context.started)
         {
             if (closestInteractable != null)
-                closestInteractable.OnInteract();
+                closestInteractable.OnInteract(this.gameObject);
             else
                 Debug.Log("Ближайшего нет");
         }
