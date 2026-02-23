@@ -38,7 +38,7 @@ public class CameraFollow : MonoBehaviour
     public bool debugVisualization = false;
 
     // Система ввода
-    private TInputControls cameraInput;
+    private Layout cameraInput;
     private InputAction lookAction;
     private InputAction cursorAction;
 
@@ -53,7 +53,7 @@ public class CameraFollow : MonoBehaviour
 
     void Awake()
     {
-        cameraInput = new TInputControls();
+        cameraInput = new Layout();
     }
 
     void Start()
@@ -88,7 +88,7 @@ public class CameraFollow : MonoBehaviour
 
     void SetupInputActions()
     {
-        lookAction = cameraInput.Player.Look;
+        lookAction = cameraInput.Shards.Look;
     }
 
     void OnEnable()

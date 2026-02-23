@@ -59,7 +59,7 @@ public class PauseManager : MonoBehaviour
     void ResumeGame()
     {
         Time.timeScale = 1f;
-        input.defaultActionMap = "Player";
+        input.defaultActionMap = "Shards";
         characterManager.enabled = true;
 
         Cursor.visible = false;

@@ -1,8 +1,9 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 
-public class CharacterManager : MonoBehaviour
+public class CharacterManager : MonoBehaviour, IManager
 {
     [Header("Ссылки")]
     public WormManager wormManager;
@@ -25,11 +26,11 @@ public class CharacterManager : MonoBehaviour
     public StateBase currentState;
     public CharacterBase currentCharacter;
     [SerializeField] private int currentCharacterIndex;
+    public Interactable closestInteractable = null;
+
 
     [Header("Настройки для интеракций")]
-    string interactTag = "Interactable";
     [SerializeField] private float interactRadius = 10f;
-
 
     public CharacterBase CurrentCharacter => currentCharacter;
     public int CurrentCharacterIndex => currentCharacterIndex;
@@ -39,7 +40,20 @@ public class CharacterManager : MonoBehaviour
 
     public int unchargedAttackCount = 0;
     public float lastAttackTime = 0f;
-    Interactable closestInteractable = null;
+    public static CharacterManager Instance { get; private set; }
+
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     void Start()
     {
@@ -77,8 +91,8 @@ public class CharacterManager : MonoBehaviour
 
     public void SwitchToCharacter(int index)
     {
-        if (PauseManager.Instance.IsGamePaused())
-            return;
+        /*if (PauseManager.Instance.IsGamePaused())
+            return;*/
 
         if (index < 0 || index >= characters.Length) return;
 
@@ -204,17 +218,23 @@ public class CharacterManager : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
+        if (GameManager.Instance.currentState != GameManager.Instance.shardsState) return;
+
         currentCharacter.moveInput = context.ReadValue<Vector2>();
     }
 
     public void OnJump(InputAction.CallbackContext context)
     {
+        if (GameManager.Instance.currentState != GameManager.Instance.shardsState) return;
+
         if (context.performed)
             SwitchState(midairState);
     }
 
     public void OnAbility(InputAction.CallbackContext context)
     {
+        if (GameManager.Instance.currentState != GameManager.Instance.shardsState) return;
+
         if (context.performed)
         {
             SwitchState(holdenAbilityState);
@@ -227,6 +247,8 @@ public class CharacterManager : MonoBehaviour
 
     public void OnDodge(InputAction.CallbackContext context)
     {
+        if (GameManager.Instance.currentState != GameManager.Instance.shardsState) return;
+
         if (context.performed)
         {
             SwitchState(dodgeState);
@@ -239,6 +261,8 @@ public class CharacterManager : MonoBehaviour
 
     public void OnCameraAction(InputAction.CallbackContext context)
     {
+        if (GameManager.Instance.currentState != GameManager.Instance.shardsState) return;
+
         if (context.performed)
         {
             currentCharacter.ToggleTargetLock();
@@ -252,10 +276,13 @@ public class CharacterManager : MonoBehaviour
 
     public void OnInteract(InputAction.CallbackContext context)
     {
+        if (GameManager.Instance.currentState != GameManager.Instance.shardsState) return;
+
         if (context.started)
         {
             if (closestInteractable != null)
                 closestInteractable.OnInteract(this.gameObject);
+
             else
                 Debug.Log("Ближайшего нет");
         }
@@ -263,6 +290,8 @@ public class CharacterManager : MonoBehaviour
 
     public void OnSwitchWeapon(InputAction.CallbackContext context)
     {
+        if (GameManager.Instance.currentState != GameManager.Instance.shardsState) return;
+
         if (context.started)
         {
             Vector2 scrollValue = context.ReadValue<Vector2>();
@@ -275,8 +304,7 @@ public class CharacterManager : MonoBehaviour
 
     public void OnAttack(InputAction.CallbackContext context)
     {
-        if (PauseManager.Instance.IsGamePaused())
-            return;
+        if (GameManager.Instance.currentState != GameManager.Instance.shardsState) return;
 
         if (context.performed)
             SwitchState(attackState);

@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/Scenes/TScene3.1.unity
     guid: 9f720bad98186a1419319cc52637a486
   - enabled: 1
-    path: Assets/Scenes/RPScenes/Game.unity
+    path: Assets/RED PETRI/Scenes/Game.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: f3e114bc83973ae4fb41314a30d82a6e,
