@@ -86,13 +86,13 @@ public class StudentMovement : MonoBehaviour
 
         if (WallWalkMode)
         {
-            rb.velocity = moveVec * wallWalkSpeed;
+            rb.linearVelocity = moveVec * wallWalkSpeed;
             return;
         }
 
         if (grounded || airControl)
         {
-            rb.velocity = new Vector2(moveVec.x * speed, rb.velocity.y);
+            rb.linearVelocity = new Vector2(moveVec.x * speed, rb.linearVelocity.y);
         }
     }
     void Update()
@@ -116,7 +116,7 @@ public class StudentMovement : MonoBehaviour
 
         isDead = true;
 
-        rb.velocity = Vector2.zero;
+        rb.linearVelocity = Vector2.zero;
         //rb.gravityScale = 0;
         //rb.simulated = false;
 
@@ -136,7 +136,7 @@ public class StudentMovement : MonoBehaviour
         transform.position = cachedRespawnPos;
 
         //rb.simulated = true;
-        rb.velocity = Vector2.zero;
+        rb.linearVelocity = Vector2.zero;
         rb.angularVelocity = 0f;
         rb.gravityScale = baseGravity;
 
@@ -165,6 +165,7 @@ public class StudentMovement : MonoBehaviour
     {
         roomAllowsWallWalk = allow;
         UpdateWallWalkState();
+        
     }
 
     public void OnMove(InputAction.CallbackContext ctx)
@@ -195,13 +196,13 @@ public class StudentMovement : MonoBehaviour
 
         if (grounded)
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             grounded = false;
             anim.PlayJump();
         }
         else if (extraJump && jumpRemains > -1)
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             jumpRemains--;
         }
     }
@@ -219,7 +220,7 @@ public class StudentMovement : MonoBehaviour
         if (Mathf.Abs(dir) < 0.1f)
             dir = GetComponent<SpriteRenderer>().flipX == true ? -1 : 1;
 
-        rb.velocity = new Vector2(dir * dashForce, 0f);
+        rb.linearVelocity = new Vector2(dir * dashForce, 0f);
 
         dashRemains--;
         isDashing = true;

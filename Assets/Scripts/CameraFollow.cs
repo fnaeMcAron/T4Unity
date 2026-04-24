@@ -38,7 +38,7 @@ public class CameraFollow : MonoBehaviour
     public bool debugVisualization = false;
 
     // Система ввода
-    private Layout cameraInput;
+    private Controls cameraInput;
     private InputAction lookAction;
     private InputAction cursorAction;
 
@@ -50,11 +50,6 @@ public class CameraFollow : MonoBehaviour
     private bool isCursorLocked = true;
     private Vector3 lastValidPosition;
     private Quaternion lastValidRotation;
-
-    void Awake()
-    {
-        cameraInput = new Layout();
-    }
 
     void Start()
     {
@@ -88,7 +83,7 @@ public class CameraFollow : MonoBehaviour
 
     void SetupInputActions()
     {
-        lookAction = cameraInput.Shards.Look;
+        lookAction = Inputs.Instance.Controls.Shards.Look;
     }
 
     void OnEnable()

@@ -14,14 +14,14 @@ public class ElectricMagnet : MonoBehaviour, IElectricSensitive
     public void OnElectricEnter(GameObject source)
     {
         target = source.transform;
-        Debug.Log("Вход");
+        Debug.Log("пїЅпїЅпїЅпїЅ");
     }
 
     public void OnElectricExit(GameObject source)
     {
         target = null;
-        rb.velocity = Vector2.zero;
-        Debug.Log("Выход");
+        rb.linearVelocity = Vector2.zero;
+        Debug.Log("пїЅпїЅпїЅпїЅпїЅ");
     }
 
     void FixedUpdate()

@@ -5,15 +5,22 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
+  - enabled: 0
+    path: Assets/Scenes/Game.unity
+    guid: 34b0daa489a563548b7d08f981eb9bc9
+  - enabled: 1
+    path: Assets/Scenes/Menu.unity
+    guid: 4123a7b3f3d5561459b05cde2b8b1de3
+  - enabled: 0
+    path: Assets/Scenes/TerminalGame.unity
+    guid: cadd7f51f68a5ad4393a076348c5d78a
   - enabled: 1
     path: Assets/Scenes/TScene3.unity
     guid: fc07b78e5deb08c4fb97c4c955946ddb
-  - enabled: 0
-    path: Assets/Scenes/TScene3.1.unity
-    guid: 9f720bad98186a1419319cc52637a486
   - enabled: 1
-    path: Assets/RED PETRI/Scenes/Game.unity
+    path: Assets/Scenes/RPScenes/T_Game.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
   m_configObjects:
-    com.unity.input.settings: {fileID: 11400000, guid: f3e114bc83973ae4fb41314a30d82a6e,
-      type: 2}
+    com.unity.input.settings: {fileID: 11400000, guid: e2e1113bca62606489707a1322157e71, type: 2}
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_UseUCBPForAssetBundles: 0

@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Termanal : MonoBehaviour
+public class Terminal : MonoBehaviour
 {
-    //своровать
-    [HideInInspector] public bool wasInteracted = false;
-
     public Camera cam;
     public Transform camOffset;
     public Canvas UI3d;
@@ -18,16 +15,17 @@ public class Termanal : MonoBehaviour
         
     }
 
-    public void OnInteract()
+    /*public void OnInteract()
     {
-        if (wasInteracted) return;
         Debug.Log("test");
         cam.GetComponent<CameraFollow>().enabled = false;
         cam.transform.position = camOffset.position;
         cam.transform.rotation = camOffset.rotation;
         SceneManager.LoadScene("Game", LoadSceneMode.Additive);
-        //своровать
-        wasInteracted = true;
+    }*/
+    public void OnInteract()
+    {
+        DungeonMaster.Instance.PushState(new sub_TerminalState(this));
     }
 
     // Update is called once per frame
