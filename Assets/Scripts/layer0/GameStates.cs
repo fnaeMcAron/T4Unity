@@ -194,9 +194,10 @@ public class sub_PauseState : IGameState, Controls.IPauseActions
 
 public class sub_TerminalState : IGameState, Controls.ITerminalActions
 {
-    private Terminal terminal;
-    OrganizerBase _previousContext;
-    StudentMovement Stdmove;
+    Terminal terminal;
+    OrganizerBase previousContext;
+    StudentMovement stdmove;
+    DocController docmenu;
 
     public sub_TerminalState(Terminal ctx) => terminal = ctx;
 
@@ -206,7 +207,7 @@ public class sub_TerminalState : IGameState, Controls.ITerminalActions
         Inputs.Instance.Controls.Terminal.Enable();
         DungeonMaster.Instance.currentSceneContext.cam.GetComponent<CameraFollow>().SetTarget(terminal.gameObject.transform);
         DungeonMaster.Instance.currentSceneContext.cam.GetComponent<CameraFollow>().ResetCameraBehindTarget();
-        _previousContext = DungeonMaster.Instance.currentSceneContext;
+        previousContext = DungeonMaster.Instance.currentSceneContext;
 
         if (DungeonMaster.Instance.currentSceneContext is IPlayerControllable controllable)
         {
@@ -222,7 +223,7 @@ public class sub_TerminalState : IGameState, Controls.ITerminalActions
         Inputs.Instance.Controls.Terminal.SetCallbacks(null);
         Inputs.Instance.Controls.Terminal.Disable();
 
-        DungeonMaster.Instance.currentSceneContext = _previousContext;
+        DungeonMaster.Instance.currentSceneContext = previousContext;
 
         if (DungeonMaster.Instance.currentSceneContext is IPlayerControllable controllable)
         {
@@ -230,23 +231,22 @@ public class sub_TerminalState : IGameState, Controls.ITerminalActions
         }
 
         DungeonMaster.Instance.gatekeeper.UnloadLevel("T_Game");
-        Stdmove = null;
+        stdmove = null;
+        docmenu = null;
     }
 
     public void Update()
     {
-        Debug.Log("Update");
-        // ГДЕ АПДЕЙТ АЛЛЛЛООООООООО
-        if (Stdmove == null)
+        if (stdmove == null || docmenu == null)
         {
-            Debug.Log("");
-            Stdmove = (DungeonMaster.Instance.currentSceneContext as SubGameOrganizer)?.stdmove;
+            stdmove = (DungeonMaster.Instance.currentSceneContext as SubGameOrganizer)?.stdmove;
+            docmenu = (DungeonMaster.Instance.currentSceneContext as SubGameOrganizer)?.docmenu;
         }
     }
 
     public void OnAbility(InputAction.CallbackContext context)
     {
-        Debug.Log("не добавлено");
+        stdmove.OnDash(context);
     }
 
     public void OnEscape(InputAction.CallbackContext context)
@@ -257,23 +257,23 @@ public class sub_TerminalState : IGameState, Controls.ITerminalActions
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        Debug.Log("не добавлено");
+        stdmove.OnJump(context);
     }
 
     public void OnMove(InputAction.CallbackContext context)
     {
-        Debug.Log("не добавлено");
-        Stdmove.OnMove(context);
+        stdmove.OnMove(context);
     }
 
     public void OnOpenDoc(InputAction.CallbackContext context)
     {
+        docmenu.OnOpenMenu(context);
         Debug.Log("не добавлено");
     }
 
     public void OnSuicide(InputAction.CallbackContext context)
     {
-        Debug.Log("не добавлено");
+        stdmove.Die();
     }
 }
 

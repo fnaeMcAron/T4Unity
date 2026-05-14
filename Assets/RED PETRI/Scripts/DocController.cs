@@ -20,7 +20,7 @@ public class DocController : MonoBehaviour
         if (menuOpen)
         {
             menuUI.SetActive(true);
-            playerInput.SwitchCurrentActionMap("UI");
+            //playerInput.SwitchCurrentActionMap("UI");
         }
         else
         {
@@ -30,10 +30,8 @@ public class DocController : MonoBehaviour
 
     public void CloseMenu()
     {
-
         menuUI.SetActive(false);
-        playerInput.SwitchCurrentActionMap("Student");
+        //playerInput.SwitchCurrentActionMap("Terminal");
         menuOpen = false;
-        //Debug.Log(" ÕŒœ ¿ ∆»¬¿");
     }
 }

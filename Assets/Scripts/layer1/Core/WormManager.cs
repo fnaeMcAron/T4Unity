@@ -29,7 +29,7 @@ public class WormManager : MonoBehaviour
 
     public void OnEnemyKilled(Enemy enemy)
     {
-        //GainWorms(enemy.wormReward);
+        GainWorms(enemy.wormReward);
     }
 
     public float GetWorms()

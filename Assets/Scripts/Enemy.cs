@@ -8,6 +8,7 @@ public class Enemy : MonoBehaviour
     public float health = 100f;
     [SerializeField] NavMeshAgent agent;
     [SerializeField] Rigidbody rb;
+    public float wormReward;
     //[SerializeField] Collider enemyCollider;
     CharacterManager _charman;
     StyleManager _styleman;
